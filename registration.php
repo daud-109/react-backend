@@ -62,7 +62,8 @@ for ($j = 0 ; $j < $rows ; ++$j) {
   }
 }
 
-//Check
+//if true store the data inside the
+//database.
 if(!$flag_email){
   //use the place holder to add the data into the user table
   //Placeholder metahod to store the data into the table

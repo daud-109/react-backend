@@ -1,5 +1,5 @@
 <?php
-
+//Leave this file alone for now 
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
@@ -17,7 +17,7 @@ $date = htmlspecialchars($_POST['date']);
 
 //Select all the field from the table and
 //run the query.
-$query   = "SELECT * FROM business_spreadsheet";
+$query   = "SELECT * FROM spreadsheet";
 $result  = $conn->query($query);
 $rows = $result->num_rows; 
 
@@ -35,7 +35,7 @@ if (!$result){
 if(true){
   //use the place holder to add the data into the user table
   //Placeholder metahod to store the data into the table
-  $stmt = $conn->prepare('INSERT INTO business_spreadsheet VALUES(?,?,?,?,?)');
+  $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
   
   $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperatur, $p_date);
 

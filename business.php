@@ -42,8 +42,8 @@ else{
   $flag = false;
 }
 
-//use the if statement to validate and 
-//set the flag varaiable
+//if true store the data inside the
+//database.
 if($flag){
   //use the place holder to add the data into the user table
   //Placeholder metahod to store the data into the table
@@ -62,7 +62,7 @@ if($flag){
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
 
-  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
+  echo json_encode(["sent" => true, "message" => "Put the message here"]);
   var_dump(http_response_code(200));
 }
 else{
