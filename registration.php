@@ -56,7 +56,7 @@ for ($j = 0 ; $j < $rows ; ++$j) {
   $row = $result->fetch_array(MYSQLI_ASSOC); 
 
   //use the identical to check if the email is not same.
-  if ($email == htmlspecialchars($row['email'])){
+  if ($email === htmlspecialchars($row['email'])){
     //Email is taken
     $flag_email = true;
   }

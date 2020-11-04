@@ -6,6 +6,7 @@
 **Talk to your team about how this file will work
 **or how they want it to work.
 */
+
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
@@ -18,30 +19,32 @@ if ($conn->connect_error) {
   var_dump(http_response_code(500));
 }
 
-$business_name = htmlspecialchars($_POST['businessName']);
-$business_type = htmlspecialchars($_POST['businessType']);
-$business_email = htmlspecialchars($_POST['businessEmail']);
-$business_phone = htmlspecialchars($_POST['businessPhone']);
+$owner_email =  htmlspecialchars($_POST['owner_email']);
+$business_name = htmlspecialchars($_POST['name']);
+$business_type = htmlspecialchars($_POST['type']);
+$business_email = htmlspecialchars($_POST['email']);
+$business_phone = htmlspecialchars($_POST['phone']);
 $url = htmlspecialchars($_POST['url']);
 
-//Select all the field from the table and
-//run the query.
-$query   = "SELECT * FROM business";
-$result  = $conn->query($query);
-$rows = $result->num_rows; 
+//Check if the email is in the database
+$owner_query = "SELECT * FROM business_owner where email = '$owner_email'";
+$owner_result = $conn->query($owner_query);
+$owner_info = $owner_result->fetch_array(MYSQLI_ASSOC);
 
-//send an error for query not working
-if (!$result){
-  var_dump(http_response_code(500));
+//use the if statment to check if the 
+//query excuted.
+if($owner_info){
+  //get the id 
+  $owner_id = $owner_info['id'];
+  $flag = true;
 }
-
-/*Here you have to go look for the business owner id
-**to enter inside the business table
-*/
+else{
+  $flag = false;
+}
 
 //use the if statement to validate and 
 //set the flag varaiable
-if(true){
+if($flag){
   //use the place holder to add the data into the user table
   //Placeholder metahod to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business VALUES(?,?,?,?,?,?,?)');
@@ -58,16 +61,16 @@ if(true){
       
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
- //echo json_encode(["sent" => true, "message" => "Put the message here"]);
-  //var_dump(http_response_code(200));
+
+  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
+  var_dump(http_response_code(200));
 }
 else{
   //echo json_encode(["sent" => false, "message" => "Put the message here"]);
-  //var_dump(http_response_code(500));
+  var_dump(http_response_code(500));
 }
 
 //close the connection 
 $conn->close();
-
 
 ?>
