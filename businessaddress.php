@@ -28,8 +28,8 @@ $business_query = "SELECT * FROM business where email = '$business_email'";
 $business_result = $conn->query($business_query);
 $business_info = $business_result->fetch_array(MYSQLI_ASSOC);
 
-//use the if statment to check if the 
-//query excuted.
+//use the if statement to check if the 
+//email is in the database
 if($business_info){
   //get the id 
   $business_id = $business_info['id'];
@@ -43,7 +43,7 @@ else{
 //database.
 if($flag){
   //use the place holder to add the data into the user table
-  //Placeholder metahod to store the data into the table
+  //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business_address VALUES(?,?,?,?,?,?)');
   
   $stmt->bind_param('iissss', $address_id, $b_id, $b_street, $b_town, $b_zip, $b_city);

@@ -12,27 +12,28 @@ if ($conn->connect_error) {
   var_dump(http_response_code(500));
 }
 
-$first_name = htmlspecialchars($_POST['first_name']);
-$last_name = htmlspecialchars($_POST['last_name']);
+$business_email = htmlspecialchars($_POST['business_email']);
+$first_name = htmlspecialchars($_POST['firstName']);
+$last_name = htmlspecialchars($_POST['lastName']);
 $email = htmlspecialchars($_POST['email']);
+$temperature = htmlspecialchars($_POST['temperature']);
+$date = htmlspecialchars($_POST['date']);
 
+//use the email to find the id of the business
+$business_query = "SELECT * FROM business where email = '$business_email'";
+$business_result = $conn->query($business_query);
+$business_info = $business_result->fetch_array(MYSQLI_ASSOC);
+$business_id = $business_info['id'];
 
-//Select all the field from the table and
-//run the query.
-$patron_query   = "SELECT * FROM patron";
+//Select all the field from the patron table and
+//get the id to store it in the table.
+$patron_query   = "SELECT * FROM patron where email = '$email'";
 $patron_result  = $conn->query($patron_query);
-$rows = $patron_result->num_rows; 
+$info = $patron_result->fetch_array(MYSQLI_ASSOC);
+
 
 //send an error for query not working
-if (!$patron_result){
-  var_dump(http_response_code(500));
-}
-
-//use the if statement to validate and 
-//set the flag varaiable
-if(!$flag_email){
-  //use the place holder to add the data into the user table
-  //Placeholder metahod to store the data into the table
+if (!$info){
   $stmt = $conn->prepare('INSERT INTO patron VALUES(?,?,?,?)');
   
   $stmt->bind_param('isss', $id, $fname, $lname, $p_email);
@@ -44,9 +45,49 @@ if(!$flag_email){
 
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
+
+  //Now look for the email which is going to help us find the id.
+  $patron_query   = "SELECT * FROM patron where email = '$email'";
+  $patron_result  = $conn->query($patron_query);
+  $info = $patron_result->fetch_array(MYSQLI_ASSOC);
   
-  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
-  //var_dump(http_response_code(200));
+  //set the id to store inside the 
+  $patron_id = $info['id'];
+
+  $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
+  
+  $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperature, $p_date);
+
+  $spreadsheet_id = NULL;
+  $b_id = $business_id;
+  $p_id = $patron_id;
+  $p_temperature = $temperature;
+  $p_date = $date;
+
+  $stmt->execute(); //execute the insert statement
+  $stmt->close(); //close the statement
+
+}
+else{
+  //If the patron is already exits just use their
+  //id to put inside the spreadsheet.
+  
+  //patron id
+  $patron_id = $info['id'];
+
+  //Place holder method to insert value. 
+  $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
+  
+  $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperature, $p_date);
+
+  $spreadsheet_id = NULL;
+  $b_id = $business_id;
+  $p_id = $patron_id;
+  $p_temperature = $temperature;
+  $p_date = $date;
+
+  $stmt->execute(); //execute the insert statement
+  $stmt->close(); //close the statement
 }
 
 //close the connection 

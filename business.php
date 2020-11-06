@@ -31,8 +31,8 @@ $owner_query = "SELECT * FROM business_owner where email = '$owner_email'";
 $owner_result = $conn->query($owner_query);
 $owner_info = $owner_result->fetch_array(MYSQLI_ASSOC);
 
-//use the if statment to check if the 
-//query excuted.
+//use the if statement to check if the 
+//email is in the database.
 if($owner_info){
   //get the id 
   $owner_id = $owner_info['id'];
@@ -46,7 +46,7 @@ else{
 //database.
 if($flag){
   //use the place holder to add the data into the user table
-  //Placeholder metahod to store the data into the table
+  //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business VALUES(?,?,?,?,?,?,?)');
   
   $stmt->bind_param('iisssss', $business_id, $b_owner_id, $b_name, $b_type, $b_email, $b_phone_Number, $b_url);
@@ -62,7 +62,7 @@ if($flag){
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
 
-  echo json_encode(["sent" => true, "message" => "Put the message here"]);
+  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
   var_dump(http_response_code(200));
 }
 else{

@@ -49,7 +49,7 @@ $flag_email = false;
 
 //Use the for loop to check if the email is taken.
 //Side not think about using the select with where
-//clasue to look for the email.
+//clause to look for the email.
 for ($j = 0 ; $j < $rows ; ++$j) { 
   
   //Fetch a result row as an associative array
@@ -63,24 +63,23 @@ for ($j = 0 ; $j < $rows ; ++$j) {
 }
 
 //if true store the data inside the
-//database.
+//database. 
 if(!$flag_email){
   //use the place holder to add the data into the user table
-  //Placeholder metahod to store the data into the table
+  //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business_owner VALUES(?,?,?,?,?)');
   
   $stmt->bind_param('issss', $owner_id, $fName, $lName, $hash, $email_temp);
 
   $owner_id = null;
-  $fName = $firstName;
-  $lName = $lastName;
+  $fName = $first_name;
+  $lName = $last_name;
 	$hash = password_hash($password, PASSWORD_DEFAULT);
   $email_temp = $email;
       
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
-  echo "In the database\n";
-
+ 
   echo json_encode(["sent" => true, "message" => "Successful register"]);
   //var_dump(http_response_code(200));
 }

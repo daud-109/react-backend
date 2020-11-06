@@ -12,7 +12,7 @@ if ($conn->connect_error) {
   var_dump(http_response_code(500));
 }
 
-$temperatur = htmlspecialchars($_POST['temperatur']);
+$temperature = htmlspecialchars($_POST['temperature']);
 $date = htmlspecialchars($_POST['date']);
 
 //Select all the field from the table and
@@ -27,26 +27,27 @@ if (!$result){
 }
 
 /*Got to the business and patron table and  
-**get the id to store in the spreadsheet tabel
+**get the id to store in the spreadsheet table
 */
 
 //use the if statement to validate and 
-//set the flag varaiable
-if(true){
+//set the flag variable
+if(false){
   //use the place holder to add the data into the user table
-  //Placeholder metahod to store the data into the table
+  //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
   
-  $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperatur, $p_date);
+  $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperature, $p_date);
 
   $spreadsheet_id = NULL;
   $b_id = $business_id;
   $p_id = $patron_id;
-  $p_temperatur = $temperatur;
+  $p_temperature = $temperature;
   $p_date = $date;
 
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
+  
  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
   //var_dump(http_response_code(200));
 }
