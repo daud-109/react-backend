@@ -14,8 +14,8 @@ if ($conn->connect_error) {
 }
 
 //Post variables 
-$date = htmlspecialchars($_POST['date']);
-$business_email= htmlspecialchars($_POST['email']);
+$date = htmlspecialchars($_POST['dateOfCase']);
+$business_email= htmlspecialchars($_POST['businessEmail']);
 
 //Select from business with given email so 
 //we can get the id with the help of associated array.

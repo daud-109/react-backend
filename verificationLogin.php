@@ -5,11 +5,6 @@
 **and password in the database. If it does not send an error.
 */
 
-// header("Access-Control-Allow-Origin: *");
-// $rest_json = file_get_contents("php://input");
-//$_POST = json_decode($rest_json, true);
-
-
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
@@ -20,6 +15,7 @@ $conn = new mysqli($hn,$un,$pw,$db);
 //and send the error
 if ($conn->connect_error) {
   var_dump(http_response_code(500));
+  die();
 }
 
 
@@ -27,57 +23,26 @@ if ($conn->connect_error) {
 $email = htmlspecialchars($_POST['email']);
 $password = htmlspecialchars($_POST['password']);
 
-
 //Select all the field from the table and
 //run the query.
-$query   = "SELECT * FROM business_owner";
-$result  = $conn->query($query);
-$rows = $result->num_rows; 
+$business_query = "SELECT * FROM business_owner where email = '$email'"; //this the query to run
+$business_result = $conn->query($business_query); //run the query
+$business_rows = $business_result->fetch_array(MYSQLI_ASSOC); //This is will get the data in associated array
 
-//send an error for query not working
-if (!$result){
-  var_dump(http_response_code(500));
-}
-
-//Set flag for test
-$flag_email = false;
-$flag_password = false;
-
-//The for loop will check if the email 
-//and password are in the table.
-for ($j = 0 ; $j < $rows ; ++$j) { 
-  //Fetch a result row as an associative array
-  $row = $result->fetch_array(MYSQLI_ASSOC); 
-  //Check if the email exits in the database.
-  if ($email === htmlspecialchars($row['email'])){
-    $flag_email = true;
-    //check if the password exits in the database. 
-    if (password_verify($password, htmlspecialchars($row['hash_password']))){
-      $flag_password = true;
-    }
-  }
-}
-
-//print_r($row);
-//Use the flag to give response back.
-if($flag_email){
-  if($flag_password){
-    //all the information is correct
+//Check if the user enter the right info
+if ($business_rows){
+  if (password_verify($password, htmlspecialchars($business_rows['hash_password']))){
     var_dump(http_response_code(200));
   }
   else{
-    //Enter the right password
     echo json_encode(["sent" => false, "message" => "Password is not correct"]);
-    //var_dump(http_response_code(500));
   }
 }
 else{
-  //Email is not correct
   echo json_encode(["sent" => false, "message" => "Email is not correct"]);
-  //var_dump(http_response_code(500));
 }
+
 //close the connection 
 $conn->close();
-
 
 ?>

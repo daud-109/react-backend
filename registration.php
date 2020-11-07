@@ -35,48 +35,24 @@ $password = htmlspecialchars($_POST['password']);
 
 //Select all the field from the table and
 //run the query.
-$query   = "SELECT * FROM business_owner";
+$query   = "SELECT * FROM business_owner WHERE email = '$email'";
 $result  = $conn->query($query);
-$rows = $result->num_rows; 
+$row = $result->fetch_array(MYSQLI_ASSOC); 
 
 //send an error for query not working
-if (!$result){
-  var_dump(http_response_code(500));
-}
-
-//create a flag variable for boolean.
-$flag_email = false;
-
-//Use the for loop to check if the email is taken.
-//Side not think about using the select with where
-//clause to look for the email.
-for ($j = 0 ; $j < $rows ; ++$j) { 
-  
-  //Fetch a result row as an associative array
-  $row = $result->fetch_array(MYSQLI_ASSOC); 
-
-  //use the identical to check if the email is not same.
-  if ($email === htmlspecialchars($row['email'])){
-    //Email is taken
-    $flag_email = true;
-  }
-}
-
-//if true store the data inside the
-//database. 
-if(!$flag_email){
+if (!$row){
   //use the place holder to add the data into the user table
   //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business_owner VALUES(?,?,?,?,?)');
   
-  $stmt->bind_param('issss', $owner_id, $fName, $lName, $hash, $email_temp);
+  $stmt->bind_param('issss', $owner_id, $fName, $lName, $email_temp, $hash);
 
   $owner_id = null;
   $fName = $first_name;
   $lName = $last_name;
-	$hash = password_hash($password, PASSWORD_DEFAULT);
   $email_temp = $email;
-      
+	$hash = password_hash($password, PASSWORD_DEFAULT);
+   
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
  

@@ -12,11 +12,11 @@ if ($conn->connect_error) {
   var_dump(http_response_code(500));
 }
 
-$business_email = htmlspecialchars($_POST['business_email']);
+$business_email = htmlspecialchars($_POST['businessEmail']);
 $first_name = htmlspecialchars($_POST['firstName']);
 $last_name = htmlspecialchars($_POST['lastName']);
 $email = htmlspecialchars($_POST['email']);
-$temperature = htmlspecialchars($_POST['temperature']);
+$temperature = htmlspecialchars($_POST['temp']);
 $date = htmlspecialchars($_POST['date']);
 
 //use the email to find the id of the business
