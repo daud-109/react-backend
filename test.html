@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>An Example Form</title>
+    <style>
+      .signup {
+        border:1px solid #999999;
+        font:  normal 14px helvetica;
+        color: #444444;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="signup" border="0" cellpadding="2" cellspacing="5" bgcolor="#eeeeee">
+      <th colspan="2" align="center">Business Register</th>
+      <form method="post" action="business.php" onsubmit="return validate(this)">
+        <tr><td>Owner Email</td>
+          <td><input type="text" name="owner_email"></td></tr>
+        <tr><td>Business Name</td>
+          <td><input type="text" name="name"></td></tr>
+        <tr><td>Business type</td>
+          <td><input type="text" name="type"></td></tr>
+        <tr><td>Business Email</td>
+            <td><input type="text" name="email"></td></tr>
+        <tr><td>Business Phone</td>
+            <td><input type="text" name="phone"></td></tr>
+        <tr><td>Business URL</td>
+            <td><input type="text" name="url"></td></tr>
+        <tr><td>Street</td>
+            <td><input type="text" name="street"></td></tr>
+        <tr><td>town</td>
+            <td><input type="text" name="town"></td></tr>
+        <tr><td>zip</td>
+            <td><input type="text" name="zip"></td></tr>
+        <tr><td>County</td>
+            <td><input type="text" name="county"></td></tr>
+        <tr><td colspan="2" align="center"><input type="submit" value="submit"></td></tr>
+      </form>
+    </table>
+  </body>
+</html>

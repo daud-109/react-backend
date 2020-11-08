@@ -17,6 +17,7 @@ $conn = new mysqli($hn,$un,$pw,$db);
 //and send the error
 if ($conn->connect_error) {
   var_dump(http_response_code(500));
+  exit();
 }
 
 $owner_email =  htmlspecialchars($_POST['owner_email']);
@@ -25,11 +26,18 @@ $business_type = htmlspecialchars($_POST['type']);
 $business_email = htmlspecialchars($_POST['email']);
 $business_phone = htmlspecialchars($_POST['phone']);
 $url = htmlspecialchars($_POST['url']);
+$street = htmlspecialchars($_POST['street']);
+$town = htmlspecialchars($_POST['town']);
+$zip  = htmlspecialchars($_POST['zip']);
+$city = htmlspecialchars($_POST['city']);
+
+echo $owner_email . "\n" . $business_name . "\n" . $business_type . "\n" . $business_email. "\n" . $business_phone . "\n" . $url . "\n" . $street . "\n" . $town . "\n" . $zip . "\n" . $city;
 
 //Check if the email is in the database
 $owner_query = "SELECT * FROM business_owner where email = '$owner_email'";
 $owner_result = $conn->query($owner_query);
 $owner_info = $owner_result->fetch_array(MYSQLI_ASSOC);
+//print_r($owner_info);
 
 //use the if statement to check if the 
 //email is in the database.
@@ -40,6 +48,8 @@ if($owner_info){
 }
 else{
   $flag = false;
+  echo "Id is not set\n";
+  exit();
 }
 
 //if true store the data inside the
@@ -57,17 +67,36 @@ if($flag){
   $b_type = $business_type;
   $b_email= $business_email;
   $b_phone_Number = $business_phone;
-  $b_url = $url;
+  $b_url = $url; 
+  $test = $stmt->execute(); //execute the insert statement
+  $stmt->close(); //close the statement
+
+  $business_query = "SELECT * FROM business where email = '$business_email'";
+  $business_result = $conn->query($business_query);
+  $business_info = $business_result->fetch_array(MYSQLI_ASSOC);
+
+  $new_id = $business_info['id'];
+
+  $stmt = $conn->prepare('INSERT INTO business_address VALUES(?,?,?,?,?,?)');
+  
+  $stmt->bind_param('iissss', $address_id, $b_id, $b_street, $b_town, $b_zip, $b_city);
+
+  $address_id = null;
+  $b_id = $new_id;
+  $b_street = $street;
+  $b_town = $town;
+  $b_zip = $zip;
+  $b_city = $city;
       
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
 
-  //echo json_encode(["sent" => true, "message" => "Put the message here"]);
-  var_dump(http_response_code(200));
+  echo json_encode(["sent" => true, "message" => "Successfully Executed"]);
+  //var_dump(http_response_code(200));
 }
 else{
   //echo json_encode(["sent" => false, "message" => "Put the message here"]);
-  var_dump(http_response_code(500));
+ // var_dump(http_response_code(500));
 }
 
 //close the connection 
