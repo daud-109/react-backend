@@ -4,6 +4,7 @@
 **enter by user matches with the stored email
 **and password in the database. If it does not send an error.
 */
+header('Content-Type: application/json');
 
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
