@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 
 //These variable will hold user data
-$email = htmlspecialchars($_POST['email']);
+$email = $_POST['email'];
 $password = htmlspecialchars($_POST['password']);
 
 //Select all the field from the table and

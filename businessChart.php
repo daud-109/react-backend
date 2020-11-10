@@ -72,6 +72,7 @@ for ($j = 0; $j < $spreadsheet_rows ; $j++) {
 //print_r($array);
 $json = json_encode($array, JSON_PRETTY_PRINT);
 //echo $spreadsheet_info;
+
 echo $json;
 //close the connection 
 $conn->close();

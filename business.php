@@ -20,18 +20,18 @@ if ($conn->connect_error) {
   exit();
 }
 
-$owner_email =  htmlspecialchars($_POST['owner_email']);
+$owner_email = $_POST['ownerEmail'];
 $business_name = htmlspecialchars($_POST['name']);
-$business_type = htmlspecialchars($_POST['type']);
+$business_type = htmlspecialchars($_POST['businessType']);
 $business_email = htmlspecialchars($_POST['email']);
 $business_phone = htmlspecialchars($_POST['phone']);
 $url = htmlspecialchars($_POST['url']);
 $street = htmlspecialchars($_POST['street']);
 $town = htmlspecialchars($_POST['town']);
 $zip  = htmlspecialchars($_POST['zip']);
-$city = htmlspecialchars($_POST['city']);
+$county = htmlspecialchars($_POST['county']);
 
-echo $owner_email . "\n" . $business_name . "\n" . $business_type . "\n" . $business_email. "\n" . $business_phone . "\n" . $url . "\n" . $street . "\n" . $town . "\n" . $zip . "\n" . $city;
+echo $owner_email . "\n" . $business_name . "\n" . $business_type . "\n" . $business_email. "\n" . $business_phone . "\n" . $url . "\n" . $street . "\n" . $town . "\n" . $zip . "\n" . $county;
 
 //Check if the email is in the database
 $owner_query = "SELECT * FROM business_owner where email = '$owner_email'";
@@ -51,10 +51,10 @@ else{
   echo "Id is not set\n";
   exit();
 }
-
 //if true store the data inside the
 //database.
 if($flag){
+  
   //use the place holder to add the data into the user table
   //Placeholder method to store the data into the table
   $stmt = $conn->prepare('INSERT INTO business VALUES(?,?,?,?,?,?,?)');
@@ -79,15 +79,15 @@ if($flag){
 
   $stmt = $conn->prepare('INSERT INTO business_address VALUES(?,?,?,?,?,?)');
   
-  $stmt->bind_param('iissss', $address_id, $b_id, $b_street, $b_town, $b_zip, $b_city);
+  $stmt->bind_param('iissss', $address_id, $b_id, $b_street, $b_town, $b_zip, $b_county);
 
   $address_id = null;
   $b_id = $new_id;
   $b_street = $street;
   $b_town = $town;
   $b_zip = $zip;
-  $b_city = $city;
-      
+  $b_county = $county;
+  
   $stmt->execute(); //execute the insert statement
   $stmt->close(); //close the statement
 
@@ -96,10 +96,9 @@ if($flag){
 }
 else{
   //echo json_encode(["sent" => false, "message" => "Put the message here"]);
- // var_dump(http_response_code(500));
+ //var_dump(http_response_code(500));
 }
 
 //close the connection 
 $conn->close();
-
 ?>

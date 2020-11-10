@@ -7,13 +7,6 @@
 **the business registration.
 */
 
-//header("Access-Control-Allow-Origin: *");
-//$rest_json = file_get_contents("php://input");
-//$_POST = json_decode($rest_json, true);
-
-// $request = json_decode($rest_json);
-// print_r($request);
-
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
@@ -39,6 +32,7 @@ $query   = "SELECT * FROM business_owner WHERE email = '$email'";
 $result  = $conn->query($query);
 $row = $result->fetch_array(MYSQLI_ASSOC); 
 
+
 //send an error for query not working
 if (!$row){
   //use the place holder to add the data into the user table
@@ -58,6 +52,8 @@ if (!$row){
  
   echo json_encode(["sent" => true, "message" => "Successful register"]);
   //var_dump(http_response_code(200));
+
+
 }
 else{
   echo json_encode(["sent" => false, "message" => "Email is taken"]);
