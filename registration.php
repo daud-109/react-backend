@@ -1,11 +1,11 @@
 <?php
-/*This file will register the user. 
-**The user have to enter the first name, last
-**name, email, and password. Check if the 
-**email is unique and register the user. if not
-**send an error message. Talk to your team about
-**the business registration.
+/*This file will register the the owner, business
+**and the address.Check if the email is unique and 
+**register the user. if not send an error message. 
+**Make sure to get the id to store inside the related
+**table.
 */
+header('Content-Type: application/json');
 
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
@@ -107,7 +107,7 @@ if (!$row){
 
   echo json_encode(["sent" => true, "message" => "Successful register"]);
   //var_dump(http_response_code(200));
-  
+
 }
 else{
   echo json_encode(["sent" => false, "message" => "Email is taken"]);

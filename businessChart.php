@@ -6,7 +6,7 @@
 **Talk to your team about how this file will work
 **or how they want it to work.
 */
-
+header('Content-Type: application/json');
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
