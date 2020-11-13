@@ -9,6 +9,7 @@
 //include the file to connect with mysql 
 require_once 'mysqlConn.php';
 
+
 //These variable will hold user data
 $email = htmlspecialchars($_POST['email']);
 $password = htmlspecialchars($_POST['password']);

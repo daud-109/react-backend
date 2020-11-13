@@ -8,4 +8,6 @@ function destroySession(){
   }
   session_destroy();
 }
+
+
 ?>
