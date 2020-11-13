@@ -66,7 +66,7 @@ for ($j = 0; $j < $spreadsheet_rows ; $j++) {
   $patron_info = $patron_result->fetch_array(MYSQLI_ASSOC);
 
   
-  $array[$j] = ["First Name" => $patron_info['first_name'], "Last Name" => $patron_info['last_name'], "Email" => $patron_info['email'], "temperature" => $spreadsheet_info['patron_id'],"Sheet Date" => $spreadsheet_info['sheet_date']];
+  $array[$j] = ["First Name" => $patron_info['first_name'], "Last Name" => $patron_info['last_name'], "Email" => $patron_info['email'], "temperature" => $spreadsheet_info['temperature'],"Sheet Date" => $spreadsheet_info['sheet_date']];
 }
 
 //print_r($array);

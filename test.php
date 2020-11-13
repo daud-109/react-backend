@@ -1,9 +1,8 @@
 <?php 
 
 function validate_email($email){
-  $filter_email = filter_var($email, FILTER_SANITIZE_EMAIL);
-  echo $filter_email . "\n";
-  if (filter_var($filter_email,FILTER_VALIDATE_EMAIL)){
+  //$filter_email = filter_var($email, FILTER_SANITIZE_EMAIL);
+  if (filter_var($email,FILTER_VALIDATE_EMAIL)){
     echo "This is correct email\n";
   }
 }
@@ -15,7 +14,7 @@ function validateEmail($field){
   return "good";
 	}
 
-$email = "jhon@cool.com";
+$email = "h1jhon@cool.com";
 // $x = strip_tags($email);
 // echo $x . "\n";
 // echo "This is addslash function: " . addslashes($x). "\n";
