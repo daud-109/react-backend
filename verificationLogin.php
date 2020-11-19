@@ -2,7 +2,8 @@
 /*This file will verify user login information. 
 **It will check if the Email and password 
 **enter by user matches with the stored email
-**and password in the database. If it does not send an error.
+**and password in the database. If it does not 
+**send an error. Look into the function
 */
 // header('Content-Type: application/json');
 
@@ -46,40 +47,35 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         //Check if the variable is correct than start the session.
         if ($password_check == TRUE) {
-          
+
           //start session
           session_start();
-          
+
           //$_SESSION['owner_email'] = $row['email'];
-          $_SESSION['owner_id'] = $row ['id']; //set the session value
+          $_SESSION['owner_id'] = $row['id']; //set the session value
 
           die(http_response_code(200));
-
         } else {
 
           echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
           die(http_response_code(401));
-
         }
-
       } else {
         //if nothing is fetch from the data base that mean there is no email in the database. 
         echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
-        
+
         die(http_response_code(401));
       }
-
     } else {
       //if the query does not run display this message
       die("Fatal Error");
     }
-
-  }else{
+  } else {
     //This is the second if statement
     die("Make sure to enter the email and password");
 
     //make sure to throw an error here
-    
+
   }
 
   //free the result memory
@@ -90,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //close the connection 
   mysqli_close($conn);
-
 } else {
   //send error because user try to get inside the file without clicking on the submit button
   die(http_response_code(404));

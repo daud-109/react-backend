@@ -20,23 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   require_once 'function.php';
 
   //This will go in the owner table
-  $first_name = htmlspecialchars(validateAll($_POST['firstName']));
-  $last_name = htmlspecialchars(validateAll($_POST['lastName']));
-  $owner_email = htmlspecialchars(validateAll($_POST['ownerEmail']));
-  $password = htmlspecialchars(validateAll($_POST['password']));
+  $first_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['firstName'])));
+  $last_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['lastName'])));
+  $owner_email = htmlspecialchars(validateAll($_POST['ownerEmail']));//check
+  $password = htmlspecialchars(str_replace(' ', '',validateAll($_POST['password'])));//check
 
   //This will go in the business table
-  $business_name = htmlspecialchars(validateAll($_POST['businessName']));
-  $business_type = htmlspecialchars(validateAll($_POST['businessType']));
-  $business_email = htmlspecialchars(validateAll($_POST['businessEmail']));
+  $business_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['businessName'])));
+  $business_type = htmlspecialchars(spaceSemicolon(validateAll($_POST['businessType'])));
+  $business_email = htmlspecialchars(validateAll($_POST['businessEmail'])); //check
   $business_phone = htmlspecialchars(validateAll($_POST['phone']));
   $url = htmlspecialchars(validateAll($_POST['url']));
 
   //This will go in the address table
-  $street = htmlspecialchars(validateAll($_POST['street']));
-  $town = htmlspecialchars(validateAll($_POST['town']));
-  $zip  = htmlspecialchars(validateAll($_POST['zip']));
-  $county = htmlspecialchars(validateAll($_POST['county']));
+  $street = htmlspecialchars(validateAll($_POST['street'])); //check
+  $town = htmlspecialchars(spaceSemicolon(validateAll($_POST['town'])));
+  $zip  = htmlspecialchars(spaceSemicolon(validateAll($_POST['zip'])));
+  $county = htmlspecialchars(spaceSemicolon(validateAll($_POST['county'])));
 
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name)   || empty($business_type) || empty($business_email) || empty($business_phone) || empty($url) || empty($street) || empty($town) || empty($zip) || empty($county)) {
