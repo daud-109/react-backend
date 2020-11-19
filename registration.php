@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //This will go in the owner table
   $first_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['firstName'])));
   $last_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['lastName'])));
-  $owner_email = htmlspecialchars(validateAll($_POST['ownerEmail']));//check
-  $password = htmlspecialchars(str_replace(' ', '',validateAll($_POST['password'])));//check
+  $owner_email = htmlspecialchars(validateAll($_POST['ownerEmail'])); //check
+  $password = htmlspecialchars(str_replace(' ', '', validateAll($_POST['password']))); //check
 
   //This will go in the business table
   $business_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['businessName'])));
@@ -103,8 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         //check if there is error in the previous query
         if (!mysqli_stmt_prepare($stmt, $query)) {
-
-          die("Fatal error fro the business query");
+          die("Fatal error for the business query");
         } else {
 
           //Provide the the statement to bind, provide the type of variable and the variable itself.
@@ -122,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
           //check if there is error in the previous query
           if (!mysqli_stmt_prepare($stmt, $query)) {
-
             die("Fatal error for the insert address query");
           } else {
 

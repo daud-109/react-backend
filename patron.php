@@ -4,7 +4,7 @@
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //include the file to connect with mysql 
   require_once 'mysqlConn.php';
-
+  require_once 'function.php';
   //start session
   session_start();
 
@@ -102,6 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             //close the statement
             mysqli_stmt_close($spreadsheet_stmt);
+
+            //successful
+            var_dump(http_response_code(200));
           }
         } else {
 
@@ -147,6 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
               //close the statement
               mysqli_stmt_close($spreadsheet_stmt);
+
+              //successful
+              var_dump(http_response_code(200));
             }
           }
         }

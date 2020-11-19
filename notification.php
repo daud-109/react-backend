@@ -13,7 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_SESSION['owner_id'])) {
     //include the file to connect with mysql 
     require_once 'mysqlConn.php';
-
+    require_once 'function.php';
+    
     //Post variables 
     $date = htmlspecialchars(validateAll($_POST['dateOfCase']));
 
