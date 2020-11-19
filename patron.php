@@ -1,103 +1,171 @@
 <?php
 
-//include the file to connect with mysql 
-require_once 'mysqlConn.php';
+//This will check if the user click the post method submit button
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+  //include the file to connect with mysql 
+  require_once 'mysqlConn.php';
 
+  //start session
+  session_start();
 
-session_start();
+  if (isset($_SESSION['owner_id'])) {
 
-if(isset($_SESSION['owner_email'])){
+    $first_name = $last_name = $email = $temperature = $date = "";
 
-  $owner_email = $_SESSION['owner_email'];
-  
-  $owner_query   = "SELECT * FROM business_owner where email = '$owner_email'";
-  $owner_result  = $conn->query($owner_query);
-  $owner_info = $owner_result->fetch_array(MYSQLI_ASSOC);
+    //Variable which will hold post value.
+    //This variable are for patron
+    $first_name = htmlspecialchars($_POST['firstName']);
+    $last_name = htmlspecialchars($_POST['lastName']);
+    $email = htmlspecialchars($_POST['email']);
 
-  $owner_id = $owner_info['id'];
+    //These variable are for spreadsheet 
+    $temperature = htmlspecialchars($_POST['temp']);
+    $date = htmlspecialchars($_POST['date']);
 
-  $first_name = htmlspecialchars($_POST['firstName']);
-  $last_name = htmlspecialchars($_POST['lastName']);
-  $email = htmlspecialchars($_POST['email']);
-  $temperature = htmlspecialchars($_POST['temp']);
-  $date = htmlspecialchars($_POST['date']);
+    if (empty($first_name) && empty($last_name) && empty($email) && empty($temperature) && empty($date)) {
+      //display error if the value are empty
+      die("Make sure all the values are enter");
+    } else {
 
-  //use the email to find the id of the business
-  $business_query = "SELECT * FROM business where owner_id = '$owner_id'";
-  $business_result = $conn->query($business_query);
-  $business_info = $business_result->fetch_array(MYSQLI_ASSOC);
-  
-  $business_id = $business_info['id'];
+      //store the id in a variable
+      $owner_id = $_SESSION['owner_id'];
 
-  //Select all the field from the patron table and
-  //get the id to store it in the table.
-  $patron_query   = "SELECT * FROM patron where email = '$email'";
-  $patron_result  = $conn->query($patron_query);
-  $info = $patron_result->fetch_array(MYSQLI_ASSOC);
+      //Get the business Id to store in the spread sheet
+      $business_query = "SELECT * FROM business where owner_id = ?";
+      $business_stmt  = mysqli_stmt_init($conn);
 
+      //if the business query does not run
+      if (!mysqli_stmt_prepare($business_stmt, $business_query)) {
+        die("Fatal error the business query did not run");
+      } else {
+        //bind the pass value by the user
+        mysqli_stmt_bind_param($business_stmt, "s", $owner_id);
 
-  //send an error for query not working
-  if (!$info){
-    $stmt = $conn->prepare('INSERT INTO patron VALUES(?,?,?,?)');
+        //execute the statement
+        mysqli_stmt_execute($business_stmt);
 
-    $stmt->bind_param('isss', $id, $fname, $lname, $p_email);
+        //get the result
+        $result = mysqli_stmt_get_result($business_stmt);
 
-    $id = null;
-    $fname = $first_name;
-    $lname = $last_name;
-    $p_email = $email;
+        //store it in a associated manner
+        $row = mysqli_fetch_assoc($result);
 
-    $stmt->execute(); //execute the insert statement
-    $stmt->close(); //close the statement
+        //get the id
+        $business_id = $row['id'];
+        //close the statement
+        mysqli_stmt_close($business_stmt);
+      }
 
-    //Now look for the email which is going to help us find the id.
-    $patron_query   = "SELECT * FROM patron where email = '$email'";
-    $patron_result  = $conn->query($patron_query);
-    $info = $patron_result->fetch_array(MYSQLI_ASSOC);
+      //Select all the field from the table and
+      //run the query.
+      $query = "SELECT * FROM patron where email = ?";
+      $stmt  = mysqli_stmt_init($conn);
 
-    //set the id to store inside the 
-    $patron_id = $info['id'];
+      //check if the query failed for the patron 
+      if (!mysqli_stmt_prepare($stmt, $query)) {
+        die("Fatal error the query did not run");
+      } else {
 
-    $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
+        //bind the pass value by the user
+        mysqli_stmt_bind_param($stmt, "s", $email);
 
-    $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperature, $p_date);
+        //execute the statement
+        mysqli_stmt_execute($stmt);
 
-    $spreadsheet_id = NULL;
-    $b_id = $business_id;
-    $p_id = $patron_id;
-    $p_temperature = $temperature;
-    $p_date = $date;
+        //get the result
+        $result = mysqli_stmt_get_result($stmt);
 
-    $stmt->execute(); //execute the insert statement
-    $stmt->close(); //close the statement
+        //if the patron is already register than go into
+        //the if statement to store data into the spreadsheet
+        if ($row = mysqli_fetch_assoc($result)) {
 
+          //set the patron id
+          $patron_id = $row['id'];
+
+          //Insert into the spreadsheet 
+          $spreadsheet_query = "INSERT INTO spreadsheet (business_id, patron_id, temperature, sheet_date) VALUES(?,?,?,?)";
+          $spreadsheet_stmt = mysqli_stmt_init($conn);
+
+          //check if the query failed for the spreadsheet
+          if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
+            die("Fatal error for insert spreadsheet query");
+          } else {
+
+            //Provide the the statement to bind, provide the type of variable and the variable itself.
+            mysqli_stmt_bind_param($spreadsheet_stmt, "iiss", $business_id, $patron_id, $temperature, $date);
+
+            //execute the data provide by the user and the sql stamens.
+            mysqli_stmt_execute($spreadsheet_stmt);
+
+            //free the memory
+            mysqli_stmt_free_result($spreadsheet_stmt);
+
+            //close the statement
+            mysqli_stmt_close($spreadsheet_stmt);
+          }
+        } else {
+
+          //if the patron is not register then register the
+          //patron and get the id to put inside the spreadsheet.
+          $patron_query = "INSERT INTO patron (first_name, last_name, email) VALUES(?,?,?)";
+          $patron_stmt = mysqli_stmt_init($conn);
+
+          //check if the query failed for the patron and it will prepare the statement
+          if (!mysqli_stmt_prepare($patron_stmt, $patron_query)) {
+            die("Fatal error for insert patron query");
+          } else {
+
+            //combine it with the variable
+            mysqli_stmt_bind_param($patron_stmt, "sss", $first_name, $last_name, $email);
+
+            //execute the data provide by the user and the sql stamens.
+            mysqli_stmt_execute($patron_stmt);
+
+            //get the patron id 
+            $patron_id = mysqli_insert_id($conn);
+
+            //close the statement
+            mysqli_stmt_close($patron_stmt);
+
+            //now insert into the spreadsheet table
+            $spreadsheet_query = "INSERT INTO spreadsheet (business_id, patron_id, temperature, sheet_date) VALUES(?,?,?,?)";
+            $spreadsheet_stmt = mysqli_stmt_init($conn);
+
+            //Check if the spreadsheet query failed
+            if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
+              die("Fatal error for the spreadsheet insert query");
+            } else {
+
+              //Provide the the statement to bind, provide the type of variable and the variable itself.
+              mysqli_stmt_bind_param($spreadsheet_stmt, "iiss", $business_id, $patron_id, $temperature, $date);
+
+              //execute the data provide by the user and the sql stamens.
+              mysqli_stmt_execute($spreadsheet_stmt);
+
+              //free the memory
+              mysqli_stmt_free_result($spreadsheet_stmt);
+
+              //close the statement
+              mysqli_stmt_close($spreadsheet_stmt);
+            }
+          }
+        }
+      }
+    }
+
+    //free the memory
+    mysqli_stmt_free_result($stmt);
+
+    //close the statement
+    mysqli_stmt_close($stmt);
+
+    //close the connection
+    mysqli_close($conn);
+  } else {
+    //if they are not logged-in.
+    die("You must be login");
   }
-  else{
-    //If the patron is already exits just use their
-    //id to put inside the spreadsheet.
-
-    //patron id
-    $patron_id = $info['id'];
-
-    //Place holder method to insert value. 
-    $stmt = $conn->prepare('INSERT INTO spreadsheet VALUES(?,?,?,?,?)');
-
-    $stmt->bind_param('iiiss', $spreadsheet_id, $b_id, $p_id, $p_temperature, $p_date);
-
-    $spreadsheet_id = NULL;
-    $b_id = $business_id;
-    $p_id = $patron_id;
-    $p_temperature = $temperature;
-    $p_date = $date;
-
-    $stmt->execute(); //execute the insert statement
-    $stmt->close(); //close the statement
-  }
-
-  //close the connection 
-  $conn->close();
+} else {
+  //send error because user try to get inside the file without clicking on the submit button
+  die(http_response_code(404));
 }
-else{
-  die("You must login");
-}
-?>

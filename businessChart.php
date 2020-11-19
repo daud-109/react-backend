@@ -7,74 +7,138 @@
 **or how they want it to work.
 */
 header('Content-Type: application/json');
-//include the file to connect with mysql 
-require_once 'mysqlConn.php';
 
-//connect to the database
-$conn = new mysqli($hn,$un,$pw,$db);
 
-//check for connect error with the DB
-//and send the error
-if ($conn->connect_error) {
-  var_dump(http_response_code(500));
+//Talk to the team about setting the post if statement
+
+session_start();
+
+if (isset($_SESSION['owner_id'])) {
+
+  //include the file to connect with mysql 
+  require_once 'mysqlConn.php';
+
+  //set the owner id
+  $owner_id = $_SESSION['owner_id'];
+
+  //For some reason if the session id is not set
+  if (empty($owner_id)) {
+    die("Fatal error");
+  } else {
+
+    //Use the select to get the business id.
+    $business_query = "SELECT * FROM business where owner_id = ?";
+    $business_stmt = mysqli_stmt_init($conn);
+
+    //if the business query failed
+    if (!mysqli_stmt_prepare($business_stmt, $business_query)) {
+      die("Fatal error the business select query failed");
+    } else {
+      //bind the variable to prepare the statement
+      mysqli_stmt_bind_param($business_stmt, "i", $owner_id);
+
+      //execute the statement
+      mysqli_stmt_execute($business_stmt);
+
+      //get result
+      $result = mysqli_stmt_get_result($business_stmt);
+
+      //get the fetch array to set the business id
+      if ($row = mysqli_fetch_assoc($result)) {
+        $business_id = $row['id'];
+      } else {
+        //for some reason if we do not get the id 
+        die("Fatal error no data of the id");
+      }
+
+      //free the memory
+      mysqli_stmt_free_result($business_stmt);
+
+      //close the statement
+      mysqli_stmt_close($business_stmt);
+
+      //query for the spreadsheet
+      $spreadsheet_query = "SELECT * FROM spreadsheet where business_id = ?";
+      $spreadsheet_stmt = mysqli_stmt_init($conn);
+
+      //if the query does not run
+      if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
+        die("Fatal error the spreadsheet select query did not run");
+      } else {
+
+        //bind the variable to prepare the statement
+        mysqli_stmt_bind_param($spreadsheet_stmt, "i", $business_id);
+
+        //execute the statement
+        mysqli_stmt_execute($spreadsheet_stmt);
+
+        //prepare the result
+        $spreadsheet_result = mysqli_stmt_get_result($spreadsheet_stmt);
+
+        //if nothing is fetch than send error
+        if (!mysqli_fetch_assoc($spreadsheet_result)) {
+          die("Fatal error, no data");
+        } else {
+
+          //Now set up the patron query
+          $patron_query = "SELECT * FROM patron where id = ?";
+          $patron_stmt = mysqli_stmt_init($conn);
+
+          //if the patron query fails 
+          if (!mysqli_stmt_prepare($patron_stmt, $patron_query)) {
+            die("Fatal error for the patron query");
+          } else {
+
+            //Make array which get encode it into json
+            //which will take patron and spreadsheet info
+            $display_table = array();
+
+            //help with increment
+            $i = 0;
+
+            //This loop will help us get the data to display on the business main page 
+            while ($spreadsheet_row = mysqli_fetch_assoc($spreadsheet_result)) {
+
+              //prepare statement to get the patron id
+              mysqli_stmt_bind_param($patron_stmt, "i", $spreadsheet_row['patron_id']);
+
+              //execute the statement
+              mysqli_stmt_execute($patron_stmt);
+
+              //prepare the statement for the result
+              $patron_result = mysqli_stmt_get_result($patron_stmt);
+
+              //get the associated array for patron
+              $patron_row = mysqli_fetch_assoc($patron_result);
+
+              //store the data inside the array
+              $display_table[$i] = ["first_name" => $patron_row['first_name'], "last_name" => $patron_row['last_name'], "email" => $patron_row['email'], "temperature" => $spreadsheet_row['temperature'], "sheet_date" => $spreadsheet_row['sheet_date']];
+
+              //increment
+              $i++;
+            }
+
+            //free the memory
+            mysqli_stmt_free_result($spreadsheet_stmt);
+            mysqli_stmt_free_result($patron_stmt);
+
+            //close the statement
+            mysqli_stmt_close($spreadsheet_stmt);
+            mysqli_stmt_close($patron_stmt);
+
+            //encode the array into json formate
+            $json = json_encode($array, JSON_PRETTY_PRINT);
+
+            //now echo it 
+            echo $json;
+          }
+        }
+      }
+    }
+  }
+
+  //close the connection
+  mysqli_close($conn);
+} else {
+  die("Please login");
 }
-
-// $business_email = htmlspecialchars($_POST['business_name']);
-$business_email = "swaith0@mozilla.org";
-
-//Check if the email is in the database
-$business_query = "SELECT * FROM business where email = '$business_email'";
-$business_result = $conn->query($business_query);
-$business_info = $business_result->fetch_array(MYSQLI_ASSOC);
-
-//send an error for query not working
-if (!$business_info){
-  //var_dump(http_response_code(500));
-  echo "Email is not correct.\n";
-  exit();
-}
-
-//Store id to use inside the spreadsheet table
-$business_id = $business_info['id'];
-
-//Select from spreadsheet with business id
-$spreadsheet_query = "SELECT * FROM spreadsheet where business_id = '$business_id'";
-$spreadsheet_result  = $conn->query($spreadsheet_query);
-$spreadsheet_rows = $spreadsheet_result->num_rows;
-
-//send error if the query did not run
-if (!$spreadsheet_rows){
-  //var_dump(http_response_code(500));
-  echo "No ID inside the spreadsheet.\n";
-  exit();
-}
-
-
-//print_r($spreadsheet_rows);
-$array = array();
-//use the loop to get the patron id, which will 
-//help us get the patron email from the patron table.
-for ($j = 0; $j < $spreadsheet_rows ; $j++) { 
-  //Fetch a result row as an associative array 
-  $spreadsheet_info = $spreadsheet_result->fetch_array(MYSQLI_ASSOC);
-
-  $patron_id = $spreadsheet_info['patron_id'];
-
-  //Select all the field from the patron table
-  $patron_query   = "SELECT * FROM patron where id = '$patron_id'";
-  $patron_result  = $conn->query($patron_query);
-  $patron_info = $patron_result->fetch_array(MYSQLI_ASSOC);
-
-  
-  $array[$j] = ["First Name" => $patron_info['first_name'], "Last Name" => $patron_info['last_name'], "Email" => $patron_info['email'], "temperature" => $spreadsheet_info['temperature'],"Sheet Date" => $spreadsheet_info['sheet_date']];
-}
-
-//print_r($array);
-$json = json_encode($array, JSON_PRETTY_PRINT);
-//echo $spreadsheet_info;
-
-echo $json;
-//close the connection 
-$conn->close();
-
-?>

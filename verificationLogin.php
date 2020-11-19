@@ -4,41 +4,94 @@
 **enter by user matches with the stored email
 **and password in the database. If it does not send an error.
 */
-//header('Content-Type: application/json');
+// header('Content-Type: application/json');
 
-//include the file to connect with mysql 
-require_once 'mysqlConn.php';
+//Make sure the user got to this page by hitting the submitting
+//the button and not by typing the url.
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
+  //include the file to connect with mysql 
+  require_once 'mysqlConn.php';
+  require_once 'function.php';
 
-//These variable will hold user data
-$email = htmlspecialchars($_POST['email']);
-$password = htmlspecialchars($_POST['password']);
+  //Assign everything empty string
+  $email = $password = "";
 
-//Select all the field from the table and
-//run the query.
-$owner_query = "SELECT * FROM business_owner where email = '$email'"; //this the query to run
-$owner_result = $conn->query($owner_query); //run the query
-$owner_rows = $owner_result->fetch_array(MYSQLI_ASSOC); //This is will get the data in associated array
+  //These variable will hold user data
+  $email = htmlspecialchars(validateAll($_POST['email']));
+  $password = htmlspecialchars(sanitize($_POST['password']));
 
-//Check if the user enter the right info
-if ($owner_rows){
-  if (password_verify($password, htmlspecialchars($owner_rows['hash_password']))){
-    var_dump(http_response_code(200));
-    session_start();
-    $_SESSION['owner_email'] = $owner_rows['email'];
-    //header("Location:C:\\Users\\16312\\Documents\\website-test\\src\\components\\Business\\BusinessInfo");
+  //Check if the user enter all the data
+  if (!(empty($email) && empty($password))) {
+
+    //Select all the field from the table and
+    //run the query.
+    $owner_query = "SELECT * FROM business_owner where email = ?";
+    $stmt  = mysqli_stmt_init($conn);
+
+    //check if the query run 
+    if (mysqli_stmt_prepare($stmt, $owner_query)) {
+
+      //actually running the query
+      mysqli_stmt_bind_param($stmt, "s", $email);
+      mysqli_stmt_execute($stmt);
+
+      //get the result
+      $result = mysqli_stmt_get_result($stmt);
+
+      //check if there is some data with the given email
+      if ($row = mysqli_fetch_assoc($result)) {
+        //This variable will be set to boolean variable.
+        $password_check = password_verify($password, $row['hash_password']); //Check if the password match
+
+        //Check if the variable is correct than start the session.
+        if ($password_check == TRUE) {
+          
+          //start session
+          session_start();
+          
+          //$_SESSION['owner_email'] = $row['email'];
+          $_SESSION['owner_id'] = $row ['id']; //set the session value
+
+          die(http_response_code(200));
+
+        } else {
+
+          echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+          die(http_response_code(401));
+
+        }
+
+      } else {
+        //if nothing is fetch from the data base that mean there is no email in the database. 
+        echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+        
+        die(http_response_code(401));
+      }
+
+    } else {
+      //if the query does not run display this message
+      die("Fatal Error");
+    }
+
+  }else{
+    //This is the second if statement
+    die("Make sure to enter the email and password");
+
+    //make sure to throw an error here
+    
   }
-  else{
-    echo json_encode(["sent" => false, "message" => "Password is not correct"]);
-    //$_POST['password'] = "Password is not correct";
-  }
-}
-else{
-  echo json_encode(["sent" => false, "message" => "Email is not correct"]);
-  //$_POST['email'] = "Email is not correct";
-}
 
-//close the connection 
-$conn->close();
+  //free the result memory
+  mysqli_stmt_free_result($stmt);
 
-?>
+  //close the statement 
+  mysqli_stmt_close($stmt);
+
+  //close the connection 
+  mysqli_close($conn);
+
+} else {
+  //send error because user try to get inside the file without clicking on the submit button
+  die(http_response_code(404));
+}

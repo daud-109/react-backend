@@ -3,118 +3,153 @@
 **and the address.Check if the email is unique and 
 **register the user. if not send an error message. 
 **Make sure to get the id to store inside the related
-**table.
+**table.We are going to use prepare statement
+**because it will help prevent sql injection.
 */
-header('Content-Type: application/json');
 
-//include the file to connect with mysql 
-require_once 'mysqlConn.php';
 
-//connect to the database
-$conn = new mysqli($hn,$un,$pw,$db);
+//Make sure the user got to this page by hitting the submitting
+//the button and not by typing the url.
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-//check for connect error with the DB
-//and send the error
-if ($conn->connect_error) {
-  //var_dump(http_response_code(500));
-  echo "Cannot connect to the database\n";
+  //Assign everything empty string
+  $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $url = $street = $town = $zip  = $county = "";
+
+  //include the file to connect with mysql 
+  require_once 'mysqlConn.php';
+  require_once 'function.php';
+
+  //This will go in the owner table
+  $first_name = htmlspecialchars($_POST['firstName']);
+  $last_name = htmlspecialchars($_POST['lastName']);
+  $owner_email = htmlspecialchars($_POST['ownerEmail']);
+  $password = htmlspecialchars($_POST['password']);
+
+  //This will go in the business table
+  $business_name = htmlspecialchars($_POST['businessName']);
+  $business_type = htmlspecialchars($_POST['businessType']);
+  $business_email = htmlspecialchars($_POST['businessEmail']);
+  $business_phone = htmlspecialchars($_POST['phone']);
+  $url = htmlspecialchars($_POST['url']);
+
+  //This will go in the address table
+  $street = htmlspecialchars($_POST['street']);
+  $town = htmlspecialchars($_POST['town']);
+  $zip  = htmlspecialchars($_POST['zip']);
+  $county = htmlspecialchars($_POST['county']);
+
+  //If any variable are empty send an error message. 
+  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name)   || empty($business_type) || empty($business_email) || empty($business_phone) || empty($url) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+
+    //send error message
+    echo json_encode(["sent" => false, "message" => "Please enter all the value"]);
+    die();
+  }
+
+  //Check if the email exits in the database.
+  $query = "SELECT * FROM business_owner WHERE email =?";
+  $stmt = mysqli_stmt_init($conn); //prepare statement
+
+  //Check if the query run
+  if (!mysqli_stmt_prepare($stmt, $query)) {
+
+    //End the program if the query does not run
+    die("Fatal Error for the owner query to check if the email is taken");
+  } else {
+
+    //Provide the the statement to bind, provide the type of variable and the variable itself.
+    mysqli_stmt_bind_param($stmt, "s", $owner_email);
+
+    //execute the data provide by the user and the sql stamens.
+    mysqli_stmt_execute($stmt);
+
+    //This take the value from the database and store it in the stmt variable.  
+    mysqli_stmt_store_result($stmt); //This is fetching data from the database
+
+    //Number of result or rows.
+    $row = mysqli_stmt_num_rows($stmt);
+
+    //check if the email exits by number of row.
+    //So if one row is effect that mean email exits.
+    if ($row > 0) {
+      //Display error
+      die(json_encode(["sent" => false, "message" => "Email is taken"]));
+    } else {
+
+      //use the place holder to add the data into the Owner table
+      //Placeholder method to store the data into the table
+      $query = "INSERT INTO business_owner (first_name, last_name, email, hash_password) VALUES(?,?,?,?)";
+      $stmt = mysqli_stmt_init($conn); //prepare statement
+
+      //if the query fails than run this statement
+      if (!mysqli_stmt_prepare($stmt, $query)) {
+        die("Fatal error for insert owner query");
+      } else {
+        //hast the password using the default which is the BCRYPT hash password function
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        //Provide the the statement to bind, provide the type of variable and the variable itself.
+        mysqli_stmt_bind_param($stmt, "ssss", $first_name, $last_name, $owner_email, $hash);
+
+        //execute the data provide by the user and the sql stamens.
+        mysqli_stmt_execute($stmt);
+
+        //get the id from this last executed inset query 
+        $owner_id = mysqli_insert_id($conn);
+
+        //Insert value into the business table
+        $query = "INSERT INTO business(owner_id, name, type, email, phone, url) VALUES(?,?,?,?,?,?)";
+        $stmt = mysqli_stmt_init($conn); //prepare statement
+
+        //check if there is error in the previous query
+        if (!mysqli_stmt_prepare($stmt, $query)) {
+
+          die("Fatal error fro the business query");
+        } else {
+
+          //Provide the the statement to bind, provide the type of variable and the variable itself.
+          mysqli_stmt_bind_param($stmt, "isssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $url);
+
+          //execute the data provide by the user and the sql stamens.
+          mysqli_stmt_execute($stmt);
+
+          //get the id from this last executed inset query 
+          $business_id = mysqli_insert_id($conn);
+
+          //insert into the address table
+          $query = "INSERT INTO business_address(business_id, street, town, zip, county) VALUES(?,?,?,?,?)";
+          $stmt = mysqli_stmt_init($conn); //prepare statement
+
+          //check if there is error in the previous query
+          if (!mysqli_stmt_prepare($stmt, $query)) {
+
+            die("Fatal error for the insert address query");
+          } else {
+
+            //Provide the the statement to bind, provide the type of variable and the variable itself.
+            mysqli_stmt_bind_param($stmt, "issss", $business_id, $street, $town, $zip, $county);
+
+            //execute the data provide by the user and the sql stamens.
+            mysqli_stmt_execute($stmt);
+          }
+        }
+
+        //free the memory
+        mysqli_stmt_free_result($stmt);
+
+        //close the statement
+        mysqli_stmt_close($stmt);
+
+        echo json_encode(["sent" => true, "message" => "Successful register"]);
+        var_dump(http_response_code(200));
+      }
+    }
+  }
+
+  //close the connection 
+  mysqli_close($conn);
+} else {
+
+  //send error because user try to get inside the file without clicking on the submit button
+  die(http_response_code(404));
 }
-
-//User enter the data
-$first_name = htmlspecialchars($_POST['firstName']);
-$last_name = htmlspecialchars($_POST['lastName']);
-$owner_email = htmlspecialchars($_POST['ownerEmail']);
-$password = htmlspecialchars($_POST['password']);
-$business_name = htmlspecialchars($_POST['businessName']);
-$business_type = htmlspecialchars($_POST['businessType']);
-$business_email = htmlspecialchars($_POST['businessEmail']);
-$business_phone = htmlspecialchars($_POST['phone']);
-$url = htmlspecialchars($_POST['url']);
-$street = htmlspecialchars($_POST['street']);
-$town = htmlspecialchars($_POST['town']);
-$zip  = htmlspecialchars($_POST['zip']);
-$county = htmlspecialchars($_POST['county']);
-
-//Select all the field from the table and
-//run the query.
-$query   = "SELECT * FROM business_owner WHERE email = '$owner_email'";
-$result  = $conn->query($query);
-$row = $result->fetch_array(MYSQLI_ASSOC); 
-
-
-//send an error for query not working
-if (!$row){
-
-  //use the place holder to add the data into the Owner table
-  //Placeholder method to store the data into the table
-  $stmt = $conn->prepare('INSERT INTO business_owner VALUES(?,?,?,?,?)');
-  
-  $stmt->bind_param('issss', $owner_id, $fName, $lName, $email_temp, $hash);
-
-  $owner_id = null;
-  $fName = $first_name;
-  $lName = $last_name;
-  $email_temp = $owner_email;
-	$hash = password_hash($password, PASSWORD_DEFAULT);
-   
-  $stmt->execute(); //execute the insert statement
-  $stmt->close(); //close the statement
-
-  //Run this query to so we can get the owner id to put inside the business.
-  $owner_query = "SELECT * FROM business_owner where email = '$owner_email'";
-  $owner_result = $conn->query($owner_query);
-  $owner_info = $owner_result->fetch_array(MYSQLI_ASSOC);
-
-  $owner_id = $owner_info['id'];
-
-  //Insert into the business table.
-  $stmt = $conn->prepare('INSERT INTO business VALUES(?,?,?,?,?,?,?)');
-  
-  $stmt->bind_param('iisssss', $business_id, $b_owner_id, $b_name, $b_type, $b_email, $b_phone_Number, $b_url);
-
-  $business_id = null;
-  $b_owner_id = $owner_id;
-  $b_name = $business_name;
-  $b_type = $business_type;
-  $b_email= $business_email;
-  $b_phone_Number = $business_phone;
-  $b_url = $url; 
-
-  $test = $stmt->execute(); //execute the insert statement
-  $stmt->close(); //close the statement
-
-  //Run this query so now we can get business ID to put inside the address.
-  $business_query = "SELECT * FROM business where email = '$business_email'";
-  $business_result = $conn->query($business_query);
-  $business_info = $business_result->fetch_array(MYSQLI_ASSOC);
-
-  $new_id = $business_info['id'];
-
-  //Insert data into the business address table.
-  $stmt = $conn->prepare('INSERT INTO business_address VALUES(?,?,?,?,?,?)');
-  
-  $stmt->bind_param('iissss', $address_id, $b_id, $b_street, $b_town, $b_zip, $b_county);
-
-  $address_id = null;
-  $b_id = $new_id;
-  $b_street = $street;
-  $b_town = $town;
-  $b_zip = $zip;
-  $b_county = $county;
-  
-  $stmt->execute(); //execute the insert statement
-  $stmt->close(); //close the statement
-
-  echo json_encode(["sent" => true, "message" => "Successful register"]);
-  //var_dump(http_response_code(200));
-
-}
-else{
-  echo json_encode(["sent" => false, "message" => "Email is taken"]);
-  //var_dump(http_response_code(500));
-}
-
-//close the connection 
-$conn->close();
-
-?>
