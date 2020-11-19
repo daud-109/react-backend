@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //These variable will hold user data
   $email = htmlspecialchars(validateAll($_POST['email']));
-  $password = htmlspecialchars(sanitize($_POST['password']));
+  $password = htmlspecialchars(validateAll($_POST['password']));
 
   //Check if the user enter all the data
   if (!(empty($email) && empty($password))) {

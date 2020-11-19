@@ -14,13 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     //Variable which will hold post value.
     //This variable are for patron
-    $first_name = htmlspecialchars($_POST['firstName']);
-    $last_name = htmlspecialchars($_POST['lastName']);
-    $email = htmlspecialchars($_POST['email']);
+    $first_name = htmlspecialchars(validateAll($_POST['firstName']));
+    $last_name = htmlspecialchars(validateAll($_POST['lastName']));
+    $email = htmlspecialchars(validateAll($_POST['email']));
 
     //These variable are for spreadsheet 
-    $temperature = htmlspecialchars($_POST['temp']);
-    $date = htmlspecialchars($_POST['date']);
+    $temperature = htmlspecialchars(validateAll($_POST['temp']));
+    $date = htmlspecialchars(validateAll($_POST['date']));
 
     if (empty($first_name) && empty($last_name) && empty($email) && empty($temperature) && empty($date)) {
       //display error if the value are empty

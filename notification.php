@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     require_once 'mysqlConn.php';
 
     //Post variables 
-    $date = htmlspecialchars($_POST['dateOfCase']);
+    $date = htmlspecialchars(validateAll($_POST['dateOfCase']));
 
     if (empty($date)) {
       //make sure the user enter the value
