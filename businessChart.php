@@ -76,7 +76,7 @@ if (isset($_SESSION['owner_id'])) {
         $spreadsheet_result = mysqli_stmt_get_result($spreadsheet_stmt);
 
         //if nothing is fetch than send error
-        if ($spreadsheet_result) {
+        if (!$spreadsheet_result) {
           die("Fatal error, no data");
         } else {
 
