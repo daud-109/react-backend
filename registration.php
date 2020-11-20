@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //Check if the query run
   if (!mysqli_stmt_prepare($stmt, $query)) {
-
     //End the program if the query does not run
     die("Fatal Error for the owner query to check if the email is taken");
   } else {
@@ -74,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if ($row > 0) {
       //Display error
       die(json_encode(["sent" => false, "message" => "Email is taken"]));
+      die(http_response_code(500));
     } else {
 
       //use the place holder to add the data into the Owner table

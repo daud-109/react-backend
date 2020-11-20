@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
           die(http_response_code(200));
         } else {
-
           echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
           die(http_response_code(401));
         }

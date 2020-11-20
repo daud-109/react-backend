@@ -22,7 +22,7 @@ if (isset($_SESSION['owner_id'])) {
   $owner_id = $_SESSION['owner_id'];
 
   //For some reason if the session id is not set
-  if (empty($owner_id)) {
+  if (empty($owner_id) || !(is_numeric($owner_id))) {
     die("Fatal error");
   } else {
 
@@ -127,7 +127,7 @@ if (isset($_SESSION['owner_id'])) {
             mysqli_stmt_close($patron_stmt);
 
             //encode the array into json formate
-            $json = json_encode($array, JSON_PRETTY_PRINT);
+            $json = json_encode($display_table, JSON_PRETTY_PRINT);
 
             //now echo it 
             echo $json;

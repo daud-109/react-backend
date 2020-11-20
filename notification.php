@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       die("Make sure all the value are enter");
     } else {
       //store the session value
-      $owner_id = $$_SESSION['owner_id'];
+      $owner_id = $_SESSION['owner_id'];
 
       //Get the business Id to store in the spread sheet
       $business_query = "SELECT * FROM business where owner_id = ?";

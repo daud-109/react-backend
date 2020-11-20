@@ -5,6 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //include the file to connect with mysql 
   require_once 'mysqlConn.php';
   require_once 'function.php';
+  
   //start session
   session_start();
 
