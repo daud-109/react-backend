@@ -10,6 +10,6 @@ if (isset($_SESSION['owner_id']) || $_SESSION['owner_email']){
   session_destroy();
 }
 else{
-  die("You were never login");
+  die("Fatal error");
 }
 ?>
