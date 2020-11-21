@@ -8,7 +8,9 @@
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   //Start session
-  session_start();
+  session_start([
+    'cookie_lifetime' => 86400,
+]);
 
   if (isset($_SESSION['owner_id'])) {
     //include the file to connect with mysql 

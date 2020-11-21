@@ -11,7 +11,9 @@ header('Content-Type: application/json');
 
 //Talk to the team about setting the post if statement
 
-session_start();
+session_start([
+  'cookie_lifetime' => 86400,
+]);
 
 if (isset($_SESSION['owner_id'])) {
 

@@ -49,7 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         if ($password_check == TRUE) {
 
           //start session
-          session_start();
+          session_start([
+            'cookie_lifetime' => 86400,
+        ]);
 
           //$_SESSION['owner_email'] = $row['email'];
           $_SESSION['owner_id'] = $row['id']; //set the session value
