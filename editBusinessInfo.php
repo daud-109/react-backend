@@ -45,7 +45,7 @@ if (isset($_SESSION['owner_id'])) {
       //get result
       $result = mysqli_stmt_get_result($business_stmt);
 
-      //get the fetch array to set the business id
+      //get the fetch array to set the data
       if ($row = mysqli_fetch_assoc($result)) {
         $business_id = $row['id'];
         $business_name = $row['name'];
