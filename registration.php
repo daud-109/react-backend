@@ -1,45 +1,42 @@
 <?php
-/*This file will register the the owner, business
-**and the address.Check if the email is unique and 
-**register the user. if not send an error message. 
-**Make sure to get the id to store inside the related
-**table.We are going to use prepare statement
+/*This file will register the owner and business.
+**The file check if the owner email is unique and 
+**than register the user. if the email is taken send 
+**an error message. We are going to use prepare statement
 **because it will help prevent sql injection.
 */
 
 
-//Make sure the user got to this page by hitting the submitting
-//the button and not by typing the url.
+//Make sure the user got to this page by hitting the 
+//submitting the button and not by typing the description.
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //Assign everything empty string
-  $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $url = $street = $town = $zip  = $county = "";
+  $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $description = $street = $town = $zip  = $county = "";
 
   //include the file to connect with mysql 
   require_once 'mysqlConn.php';
   require_once 'function.php';
 
   //This will go in the owner table
-  $first_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['firstName'])));
-  $last_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['lastName'])));
-  $owner_email = htmlspecialchars(validateAll($_POST['ownerEmail'])); //check
-  $password = htmlspecialchars(str_replace(' ', '', validateAll($_POST['password']))); //check
+  $first_name = htmlspecialchars($_POST['firstName']);
+  $last_name = htmlspecialchars($_POST['lastName']);
+  $owner_email = htmlspecialchars($_POST['ownerEmail']); //check
+  $password = htmlspecialchars ($_POST['password']); //check
 
   //This will go in the business table
-  $business_name = htmlspecialchars(spaceSemicolon(validateAll($_POST['businessName'])));
-  $business_type = htmlspecialchars(spaceSemicolon(validateAll($_POST['businessType'])));
-  $business_email = htmlspecialchars(validateAll($_POST['businessEmail'])); //check
-  $business_phone = htmlspecialchars(validateAll($_POST['phone']));
-  $url = htmlspecialchars(validateAll($_POST['url']));
-
-  //This will go in the address table
-  $street = htmlspecialchars(validateAll($_POST['street'])); //check
-  $town = htmlspecialchars(spaceSemicolon(validateAll($_POST['town'])));
-  $zip  = htmlspecialchars(spaceSemicolon(validateAll($_POST['zip'])));
-  $county = htmlspecialchars(spaceSemicolon(validateAll($_POST['county'])));
+  $business_name = htmlspecialchars($_POST['businessName']);
+  $business_type = htmlspecialchars($_POST['businessType']);
+  $business_email = htmlspecialchars($_POST['businessEmail']); //check
+  $business_phone = htmlspecialchars($_POST['phone']);
+  $description = htmlspecialchars($_POST['url']); //make sure to change to description
+  $street = htmlspecialchars($_POST['street']); //check
+  $town = htmlspecialchars($_POST['town']);
+  $zip  = htmlspecialchars($_POST['zip']);
+  $county = htmlspecialchars($_POST['county']);
 
   //If any variable are empty send an error message. 
-  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name)   || empty($business_type) || empty($business_email) || empty($business_phone) || empty($url) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
 
     //send error message
     echo json_encode(["sent" => false, "message" => "Please enter all the value"]);
@@ -98,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $owner_id = mysqli_insert_id($conn);
 
         //Insert value into the business table
-        $query = "INSERT INTO business(owner_id, name, type, email, phone, url) VALUES(?,?,?,?,?,?)";
+        $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county) VALUES(?,?,?,?,?,?,?,?,?,?)";
         $stmt = mysqli_stmt_init($conn); //prepare statement
 
         //check if there is error in the previous query
@@ -107,29 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         } else {
 
           //Provide the the statement to bind, provide the type of variable and the variable itself.
-          mysqli_stmt_bind_param($stmt, "isssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $url);
+          mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county);
 
           //execute the data provide by the user and the sql stamens.
           mysqli_stmt_execute($stmt);
-
-          //get the id from this last executed inset query 
-          $business_id = mysqli_insert_id($conn);
-
-          //insert into the address table
-          $query = "INSERT INTO business_address(business_id, street, town, zip, county) VALUES(?,?,?,?,?)";
-          $stmt = mysqli_stmt_init($conn); //prepare statement
-
-          //check if there is error in the previous query
-          if (!mysqli_stmt_prepare($stmt, $query)) {
-            die("Fatal error for the insert address query");
-          } else {
-
-            //Provide the the statement to bind, provide the type of variable and the variable itself.
-            mysqli_stmt_bind_param($stmt, "issss", $business_id, $street, $town, $zip, $county);
-
-            //execute the data provide by the user and the sql stamens.
-            mysqli_stmt_execute($stmt);
-          }
         }
 
         //free the memory

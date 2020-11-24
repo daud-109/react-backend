@@ -5,10 +5,9 @@
 **and password in the database. If it does not 
 **send an error. Look into the function
 */
-// header('Content-Type: application/json');
 
-//Make sure the user got to this page by hitting the submitting
-//the button and not by typing the url.
+//Make sure the user get to this page by hitting the submitting
+//button and not by typing the url.
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //include the file to connect with mysql 
@@ -19,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $email = $password = "";
 
   //These variable will hold user data
-  $email = htmlspecialchars(validateAll($_POST['email']));
-  $password = htmlspecialchars(validateAll($_POST['password']));
+  $email = htmlspecialchars($_POST['email']);
+  $password = htmlspecialchars($_POST['password']);
 
   //Check if the user enter all the data
   if (!(empty($email) && empty($password))) {
@@ -49,22 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         if ($password_check == TRUE) {
 
           //start session
-          session_start([
-            'cookie_lifetime' => 86400,
-        ]);
+          session_start();
 
-          //$_SESSION['owner_email'] = $row['email'];
+          //set session variable
           $_SESSION['owner_id'] = $row['id']; //set the session value
 
+          //send successful message
           die(http_response_code(200));
         } else {
-          echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+          //echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
           die(http_response_code(401));
         }
       } else {
         //if nothing is fetch from the data base that mean there is no email in the database. 
         echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
-
         die(http_response_code(401));
       }
     } else {
@@ -74,9 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   } else {
     //This is the second if statement
     die("Make sure to enter the email and password");
-
-    //make sure to throw an error here
-
   }
 
   //free the result memory
