@@ -1,6 +1,6 @@
 <?php
 /*This file will verify user login information. 
-**It will check if the Email and password 
+**It will check if the email and password 
 **enter by user matches with the stored email
 **and password in the database. If it does not 
 **send an error. Look into the function

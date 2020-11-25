@@ -6,7 +6,7 @@
 //start session
 session_start();
 
-//check if teh user is logged in
+//check if the user is logged in
 if (isset($_SESSION['owner_id'])) {
 
   //check if the user selected a business
@@ -18,7 +18,7 @@ if (isset($_SESSION['owner_id'])) {
     //set the business id
     $id = $_SESSION['business_id'];
 
-    //declare variable here
+    //declare variable for business
     $name = $type = $email = $phone = $description = $street = $town = $zip  = $county = "";
 
     //Post variable here and fill in the post variable name
@@ -57,6 +57,8 @@ if (isset($_SESSION['owner_id'])) {
 
       //close the statement
       mysqli_stmt_close($stmt);
+
+      //send 200 message
       var_dump(http_response_code(200));
     }
 

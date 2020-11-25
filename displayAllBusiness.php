@@ -53,7 +53,7 @@ if (isset($_SESSION['owner_id'])) {
 
         $i++;
       }
-
+      
       //encode the array into json formate
       $json = json_encode($display_business, JSON_PRETTY_PRINT);
 
