@@ -5,12 +5,15 @@
 **Talk to your team if they want send data as json or post (most likely post).
 **if using post make sure the user cannot edit the info
 */
+header("Access-Control-Allow-Origin: *");
+$rest_json = file_get_contents("php://input");
+$_POST = json_decode($rest_json, true);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   //Start session
   session_start();
-
+  $_SESSION['owner_id'] = 1;
   //check if the user is logged-in
   if (isset($_SESSION['owner_id'])) {
 
@@ -29,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     //Post variables 
     $street = htmlspecialchars($_POST['street']);
-
+    
     //check if the post is empty
     if (empty($street)) {
       die("Fatal error, value was enter");
@@ -60,8 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             //store the session 
             $_SESSION['business_id'] = $row['id'];
+            
             die(http_response_code(200));
-
           } else {
             die("Fatal error when matching the street");
           }

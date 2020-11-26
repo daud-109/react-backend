@@ -129,8 +129,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               $patron_email_array[$i] = $row['email'];
 
               //echo it just for the sack of it
-              echo $unique_patron_id[$i] . " " . $patron_email_array[$i] . "\n";
+              //echo $unique_patron_id[$i] . " " . $patron_email_array[$i] . "\n";
             }
+            $json = json_encode($patron_email_array, JSON_PRETTY_PRINT);
+
+            mail('phpseniorproject@gmail.com', 'All of the email of the patron', $json, "From: phpseniorproject@gmail.com");
 
             //free the memory
             mysqli_stmt_free_result($patron_stmt);

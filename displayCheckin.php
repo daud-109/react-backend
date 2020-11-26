@@ -3,7 +3,6 @@
 **selected business. It will send info as json to 
 **the front-end. 
 */
-
 header('Content-Type: application/json');
 
 //start the session
@@ -11,7 +10,7 @@ session_start();
 
 //Check if the user is login
 if (isset($_SESSION['owner_id'])) {
-
+ 
   //Check if the user selected a business
   if (isset($_SESSION['business_id'])) {
     //include the file to connect with mysql 

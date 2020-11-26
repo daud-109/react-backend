@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   if (isset($_SESSION['owner_id'])) {
 
     //check if the business is selected
-    if (isset($_SESSION['business_info'])) {
+    if (isset($_SESSION['business_id'])) {
       //include the file to connect with mysql 
       require_once 'mysqlConn.php';
       require_once 'function.php';
