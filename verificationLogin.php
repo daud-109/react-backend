@@ -3,11 +3,11 @@
 **It will check if the email and password 
 **enter by user matches with the stored email
 **and password in the database. If it does not 
-**send an error. Look into the function
+**send an error. 
+---Look into the function
 */
 
-//Make sure the user get to this page by hitting the submitting
-//button and not by typing the url.
+//check if the 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //include the file to connect with mysql 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $password = htmlspecialchars($_POST['password']);
 
   //Check if the user enter all the data
-  if (!(empty($email) && empty($password))) {
+  if (!(empty($email) && empty($password))) { 
 
     //Select all the field from the table and
     //run the query.
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       //if the query does not run display this message
       die("Fatal Error");
     }
-  } else {
+  } else { //this else is the 
     //This is the second if statement
     die("Make sure to enter the email and password");
   }
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //close the connection 
   mysqli_close($conn);
-} else {
+} else { //this else belong to the first if statement.
   //send error because user try to get inside the file without clicking on the submit button
   die(http_response_code(404));
 }

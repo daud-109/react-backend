@@ -33,7 +33,7 @@ if (isset($_SESSION['owner_id'])) {
   }
 
   //check if the email is taken
-  
+
 
   //Update the owner info
   $query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ?, hash_password = ?
@@ -56,11 +56,14 @@ if (isset($_SESSION['owner_id'])) {
     mysqli_stmt_execute($stmt);
 
     //know check if the statement was affected
-    mysqli_stmt_store_result($stmt); 
+    mysqli_stmt_store_result($stmt);
     $row = mysqli_stmt_num_rows($stmt);
 
-    if($row == 1){
-
+    if ($row === 1) {
+      //send a 200 message
+      var_dump(http_response_code(200));
+    }else {
+      var_dump(http_response_code(401));
     }
 
     //free the memory
@@ -68,9 +71,6 @@ if (isset($_SESSION['owner_id'])) {
 
     //close the statement
     mysqli_stmt_close($stmt);
-
-    //send a 200 message
-    var_dump(http_response_code(200));
   }
 
   //close the connection

@@ -24,7 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //Post variables 
       $date = htmlspecialchars($_POST['dateOfCase']);
-
+      $subject = htmlentities($_POST['subject']);
+      $message =htmlentities($_POST['message']);
       //check if the date is empty
       if (empty($date)) {
         //make sure the user enter the value
@@ -131,8 +132,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               //echo it just for the sack of it
               //echo $unique_patron_id[$i] . " " . $patron_email_array[$i] . "\n";
             }
+            //encode json file
             $json = json_encode($patron_email_array, JSON_PRETTY_PRINT);
 
+            //send mail is going inside the loop, the first par is $row['email'], the send one is $subject, and the third one is email
             mail('phpseniorproject@gmail.com', 'All of the email of the patron', $json, "From: phpseniorproject@gmail.com");
 
             //free the memory
