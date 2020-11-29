@@ -24,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //Post variables 
       $date = htmlspecialchars($_POST['dateOfCase']);
-      $subject = htmlentities($_POST['subject']);
-      $message =htmlentities($_POST['message']);
+      //$subject = htmlentities($_POST['subject']);
+      //$message =htmlentities($_POST['message']);
       //check if the date is empty
       if (empty($date)) {
         //make sure the user enter the value

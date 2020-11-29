@@ -22,22 +22,22 @@ if (isset($_SESSION['owner_id'])) {
     $name = $type = $email = $phone = $description = $street = $town = $zip  = $county = "";
 
     //Post variable here and fill in the post variable name
-    $name = htmlspecialchars($_POST['']);
-    $type = htmlspecialchars($_POST['']);
-    $email = htmlspecialchars($_POST['']);
-    $phone = htmlspecialchars($_POST['']);
-    $description = htmlspecialchars($_POST['']);
-    $street = htmlspecialchars($_POST['']);
-    $town = htmlspecialchars($_POST['']);
-    $zip  = htmlspecialchars($_POST['']);
-    $county = htmlspecialchars($_POST['']);
+    $name = htmlspecialchars($_POST['name']);
+    $type = htmlspecialchars($_POST['type']);
+    $email = htmlspecialchars($_POST['email']);
+    $phone = htmlspecialchars($_POST['phone']);
+    $description = htmlspecialchars($_POST['description']);
+    $street = htmlspecialchars($_POST['street']);
+    $town = htmlspecialchars($_POST['town']);
+    $zip  = htmlspecialchars($_POST['zip']);
+    $county = htmlspecialchars($_POST['county']);
 
     //If any variable are empty send an error message. 
     if (empty($name) || empty($type) || empty($email) || empty($phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
       //Error message
       die("Please enter all the value");
     }
-    
+
     //update the business the table
     $query = "UPDATE business SET name = ?, type = ?, email = ?, phone = ? , description = ?, street = ?, town = ?, zip = ?, county = ? where id = ?";
     $stmt = mysqli_stmt_init($conn);
@@ -52,6 +52,18 @@ if (isset($_SESSION['owner_id'])) {
       //execute the statement
       mysqli_stmt_execute($stmt);
 
+      //know check if the statement was affected
+      mysqli_stmt_store_result($stmt);
+      $row = mysqli_stmt_num_rows($stmt);
+
+      if ($row > 0) {
+        //send a 200 message
+        echo "This works";
+        var_dump(http_response_code(200));
+      } else {
+        echo "This field";
+        var_dump(http_response_code(401));
+      }
       //free the memory
       mysqli_stmt_free_result($stmt);
 

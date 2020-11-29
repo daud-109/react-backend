@@ -1,65 +1,57 @@
 <?php
 //include the file to connect with mysql 
-require_once 'mysqlConn.php';
-require_once 'function.php';
+    require_once 'mysqlConn.php';
+    require_once 'function.php';
 
-//set the owner id
-$id = 1;
+    //set the owner id to variable
+    $owner_id = 9;
+    
 
-//declare variable here
-$first_name = "Leora";
-$last_name = "Gligorijevic";
-$email = "rpoulsum2@reference.com"; //lgligorijevic0@intel.com
-$password = "abc123";
+    //declare variable here
+    $name = "business";
+    $type = "business";
+    $email = "business";
+    $phone = "business";
+    $description = "business";
+    $street = "business";
+    $town = "business";
+    $zip  = "business";
+    $county = "business";
 
+    //Post variable here and fill in the post variable name
 
-//If any variable are empty send an error message. 
-if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
-  //Error message
-  die("Please enter all the value");
-}
+    //If any variable are empty send an error message. 
+    if (empty($name) || empty($type) || empty($email) || empty($phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+      //Error message
+      die("Please enter all the value");
+    }
 
-//check if the email is taken
+    //Insert value into the business table
+    $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county) VALUES(?,?,?,?,?,?,?,?,?,?)";
+    $stmt = mysqli_stmt_init($conn); //prepare statement
 
+    //check if there is error in the previous query
+    if (!mysqli_stmt_prepare($stmt, $query)) {
+      die("Fatal error for the business query");
+    } else {
 
-//Update the owner info
-$query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ?, hash_password = ?
- where id = ?";
-$stmt = mysqli_stmt_init($conn);
+      //Provide the the statement to bind, provide the type of variable and the variable itself.
+      mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $name, $type, $email, $phone, $description, $street, $town, $zip, $county);
 
-//if the query failed
-if (!mysqli_stmt_prepare($stmt, $query)) {
-  die("Fatal error the owner query failed");
-} else {
+      //execute the data provide by the user and the sql stamens.
+      mysqli_stmt_execute($stmt);
+    }
 
-  //side note: Have to come back here to check if the user enter the right password
-  //hash the new password 
-  $hash_password = password_hash($password, PASSWORD_DEFAULT);
+    //free the memory
+    mysqli_stmt_free_result($stmt);
 
-  //bind the variable to prepare the statement
-  mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $hash_password, $id);
+    //close the statement
+    mysqli_stmt_close($stmt);
 
-  //execute the statement
-  mysqli_stmt_execute($stmt);
+    //maybe display a message
+   
+    //var_dump(http_response_code(200));
 
-  //know check if the statement was affected
-  mysqli_stmt_store_result($stmt);
-  $row = mysqli_stmt_num_rows($stmt);
-
-  if ($row === 1) {
-    //send a 200 message
-    var_dump(http_response_code(200));
-    echo "Good\n";
-  } else {
-    echo "No Good\n";
-  }
-
-  //free the memory
-  mysqli_stmt_free_result($stmt);
-
-  //close the statement
-  mysqli_stmt_close($stmt);
-}
-
-//close the connection
-mysqli_close($conn);
+    //close the connection 
+    mysqli_close($conn);
+  

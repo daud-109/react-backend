@@ -23,15 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $name = $type = $email = $phone = $description = $street = $town = $zip  = $county = "";
 
     //Post variable here and fill in the post variable name
-    $name = htmlspecialchars($_POST['']);
-    $type = htmlspecialchars($_POST['']);
-    $email = htmlspecialchars($_POST['']);
-    $phone = htmlspecialchars($_POST['']);
-    $description = htmlspecialchars($_POST['']);
-    $street = htmlspecialchars($_POST['']);
-    $town = htmlspecialchars($_POST['']);
-    $zip  = htmlspecialchars($_POST['']);
-    $county = htmlspecialchars($_POST['']);
+    $name = htmlspecialchars($_POST['name']);
+    $type = htmlspecialchars($_POST['type']);
+    $email = htmlspecialchars($_POST['email']);
+    $phone = htmlspecialchars($_POST['phone']);
+    $description = htmlspecialchars($_POST['description']);
+    $street = htmlspecialchars($_POST['street']);
+    $town = htmlspecialchars($_POST['town']);
+    $zip  = htmlspecialchars($_POST['zip']);
+    $county = htmlspecialchars($_POST['county']);
 
     //If any variable are empty send an error message. 
     if (empty($name) || empty($type) || empty($email) || empty($phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     mysqli_stmt_close($stmt);
 
     //maybe display a message
+   
     var_dump(http_response_code(200));
 
     //close the connection 

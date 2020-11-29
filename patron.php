@@ -90,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
               mysqli_stmt_close($spreadsheet_stmt);
 
               //successful
+              echo "Patron added";
               var_dump(http_response_code(200));
             }
           } else {
@@ -138,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 mysqli_stmt_close($spreadsheet_stmt);
 
                 //successful
+                echo "Add the info";
                 var_dump(http_response_code(200));
               }
             }
