@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //check which business is selected
     if (isset($_SESSION['business_id'])) {
       //include the file to connect with mysql 
+      require_once 'test.php';
       require_once 'mysqlConn.php';
       require_once 'function.php';
 
@@ -24,8 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //Post variables 
       $date = htmlspecialchars($_POST['dateOfCase']);
+      echo $date;
       //$subject = htmlentities($_POST['subject']);
       //$message =htmlentities($_POST['message']);
+
       //check if the date is empty
       if (empty($date)) {
         //make sure the user enter the value
@@ -33,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       } else {
         //store the session value
         $business_id = $_SESSION['business_id'];
-        
+
         //This query will help us get the patron id form the
         //spreadsheet. Which will help us get the email of the
         //patron form the patron table.
@@ -131,13 +134,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
               //echo it just for the sack of it
               //echo $unique_patron_id[$i] . " " . $patron_email_array[$i] . "\n";
+              
+              //email setting
+              $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
+              $mail->addAddress($row['email']);               // Name is optional
             }
+
+            //the subject and email
+            $mail->Subject = 'Website subject';
+            $mail->Body    = 'This is website test';
+
+            //send the mail
+            $mail->send();
+            
             //encode json file
-            $json = json_encode($patron_email_array, JSON_PRETTY_PRINT);
+            //$json = json_encode($patron_email_array, JSON_PRETTY_PRINT);
 
             //send mail is going inside the loop, the first par is $row['email'], the send one is $subject, and the third one is email
-            mail('phpseniorproject@gmail.com', 'All of the email of the patron', $json, "From: phpseniorproject@gmail.com");
-
+           
             //free the memory
             mysqli_stmt_free_result($patron_stmt);
 
