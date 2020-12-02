@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           $_SESSION['owner_id'] = $row['id']; //set the session value
 
           //send successful message
-          die(http_response_code(200));
+          var_dump(http_response_code(200));
         } else {
           //echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
           die(http_response_code(401));

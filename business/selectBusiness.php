@@ -5,14 +5,14 @@
 */
 header('Content-Type: application/json');
 
-//Talk to the team about setting the post if statement
-
+//start the session to get the session 
 session_start();
 
+//check if the owner is logged in
 if (isset($_SESSION['owner_id'])) {
 
   //include the file to connect with mysql 
-  require_once 'mysqlConn.php';
+  require_once '../mysqlConn.php';
 
   //set the owner id
   $owner_id = $_SESSION['owner_id'];
@@ -23,8 +23,15 @@ if (isset($_SESSION['owner_id'])) {
 
   //if the business query failed
   if (!mysqli_stmt_prepare($business_stmt, $business_query)) {
-    die("Fatal error the business select query failed");
+
+    //terminate
+    echo "Fatal error the business select query failed";
+
+    //check which error you want to send (talk to team)
+    die(http_response_code(409)); //conflict
+
   } else {
+
     //bind the variable to prepare the statement
     mysqli_stmt_bind_param($business_stmt, "i", $owner_id);
 
@@ -36,8 +43,13 @@ if (isset($_SESSION['owner_id'])) {
 
     //if nothing is fetch than send error
     if (!$result) {
-      die("Fatal error");
+      echo "Fatal error";
+
+      //check which error you want to send
+      die(http_response_code(409)); //conflict
+
     } else {
+
       //Make array which get encode it into json
       //which will take patron and spreadsheet info
       $display_business = array();
@@ -53,12 +65,23 @@ if (isset($_SESSION['owner_id'])) {
 
         $i++;
       }
-      
+
       //encode the array into json formate
       $json = json_encode($display_business, JSON_PRETTY_PRINT);
 
-      //now echo it 
-      echo $json;
+      //now check if the json has value
+
+      if ($json) {
+
+        //display all of the business
+        echo $json;
+        
+      } else {
+
+        //if json is empty
+        echo "No data";
+      }
+
 
       //free the memory
       mysqli_stmt_free_result($business_stmt);
