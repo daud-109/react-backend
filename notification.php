@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //check which business is selected
     if (isset($_SESSION['business_id'])) {
       //include the file to connect with mysql 
-      require_once 'test.php';
+      require_once 'email.php';
       require_once 'mysqlConn.php';
       require_once 'function.php';
 
