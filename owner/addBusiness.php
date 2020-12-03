@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //Start session
   session_start();
 
+  //check if the user is logged in
   if (isset($_SESSION['owner_id'])) {
 
     //include the file to connect with mysql 
@@ -53,8 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
       //check if the business is added
       if (mysqli_stmt_execute($stmt)) {
-        echo "It add new business";
+        echo "New business add";
       } else {
+        //if not display error
         echo "Failed to add new business";
       }
     }

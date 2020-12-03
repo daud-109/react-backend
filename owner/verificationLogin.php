@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
           //set session variable
           $_SESSION['owner_id'] = $row['id']; //set the session value
-
+         
           //send successful message
           var_dump(http_response_code(200));
         } else {
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
       } else {
         //if nothing is fetch from the data base that mean there is no email in the database. 
-        echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+        echo "Email or Password is not correct";
         die(http_response_code(401));
       }
     } else {

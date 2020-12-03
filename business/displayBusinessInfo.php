@@ -65,9 +65,6 @@ if (isset($_SESSION['owner_id'])) {
         //for some reason if we do not get the id 
         echo "Fatal error no data of the id";
 
-        //terminate the program
-        die(http_response_code(409)); //needdd to change this later
-
       }
     }
 
@@ -77,9 +74,6 @@ if (isset($_SESSION['owner_id'])) {
 
     //if the user did not select a business display the error
     echo "Select a business";
-
-    //terminate
-    die(http_response_code(409)); //make sure to changeee this 
 
   }
 } else {

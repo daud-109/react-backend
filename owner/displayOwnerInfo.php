@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 //start session
 session_start();
 
-//check if teh user is logged in
+//check if the user is logged in
 if (isset($_SESSION['owner_id'])) {
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
@@ -40,9 +40,12 @@ if (isset($_SESSION['owner_id'])) {
 
       //store info as array
       $owner_info = array("first_name" => $row['first_name'], "last_name" => $row['last_name'], "email" => $row['email']);
+
     } else {
+
       //for some reason if we do not get the id 
-      die("Fatal error no data of the id");
+      die("Fatal error no data");
+
     }
 
     //free the memory
@@ -54,7 +57,7 @@ if (isset($_SESSION['owner_id'])) {
     //encode the array into json formate
     $json = json_encode($owner_info, JSON_PRETTY_PRINT);
 
-    //now echo it 
+    //display the data
     echo $json;
   }
 

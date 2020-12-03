@@ -8,7 +8,7 @@
 
 
 //Make sure the user got to this page by hitting the 
-//submitting the button and not by typing the description.
+//submit button and not by typing the description.
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //Assign everything empty string
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $first_name = htmlspecialchars($_POST['firstName']);
   $last_name = htmlspecialchars($_POST['lastName']);
   $owner_email = htmlspecialchars($_POST['ownerEmail']); //check
-  $password = htmlspecialchars ($_POST['password']); //check
+  $password = htmlspecialchars($_POST['password']); //check
 
   //This will go in the business table
   $business_name = htmlspecialchars($_POST['businessName']);
@@ -86,26 +86,49 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         //Provide the the statement to bind, provide the type of variable and the variable itself.
         mysqli_stmt_bind_param($stmt, "ssss", $first_name, $last_name, $owner_email, $hash);
 
-        //execute the data provide by the user and the sql stamens.
-        mysqli_stmt_execute($stmt);
+        //Check if the data got executed
+        if (mysqli_stmt_execute($stmt)) {
 
-        //get the id from this last executed inset query 
-        $owner_id = mysqli_insert_id($conn);
+          //get the id from this last executed inset query 
+          $owner_id = mysqli_insert_id($conn);
 
-        //Insert value into the business table
-        $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county) VALUES(?,?,?,?,?,?,?,?,?,?)";
-        $stmt = mysqli_stmt_init($conn); //prepare statement
+          //Insert value into the business table
+          $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county) VALUES(?,?,?,?,?,?,?,?,?,?)";
+          $stmt = mysqli_stmt_init($conn);
 
-        //check if there is error in the previous query
-        if (!mysqli_stmt_prepare($stmt, $query)) {
-          die("Fatal error for the business query");
+          //check if there is error in the previous query
+          if (!mysqli_stmt_prepare($stmt, $query)) {
+
+            //display an error message
+            die("Fatal error for the business query");
+          } else {
+
+            //Provide the the statement to bind, provide the type of variable and the variable itself.
+            mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county);
+
+            //Now check if this query executed
+            if (mysqli_stmt_execute($stmt)) {
+
+              //successfully register
+              echo "Successfully Register";
+              var_dump(http_response_code(200));
+            } else {
+
+              //So delete the owner data
+              $query = "DELETE FROM business_owner WHERE id = '$owner_id'";
+              $stmt = mysqli_stmt_prepare($conn, $query);
+
+              //execute the delete statement
+              mysqli_stmt_execute($stmt);
+
+              //Data enter into query was not correct
+              echo "Something was not enter in correct format for the business";
+            }
+          }
         } else {
 
-          //Provide the the statement to bind, provide the type of variable and the variable itself.
-          mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county);
-
-          //execute the data provide by the user and the sql stamens.
-          mysqli_stmt_execute($stmt);
+          //Data pass into the owner query was not correct
+          echo "Something was not enter in correct format for the owner";
         }
 
         //free the memory
@@ -113,10 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         //close the statement
         mysqli_stmt_close($stmt);
-        
-        //send message
-        echo "Successfully Register";
-        var_dump(http_response_code(200));
       }
     }
   }

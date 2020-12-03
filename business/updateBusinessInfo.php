@@ -49,21 +49,14 @@ if (isset($_SESSION['owner_id'])) {
       //bind the variable to prepare the statement
       mysqli_stmt_bind_param($stmt, "sssssssssi", $name, $type, $email, $phone, $description, $street, $town, $zip, $county, $id);
 
-      //execute the statement
-      mysqli_stmt_execute($stmt);
-
-      //know check if the statement was affected
-      mysqli_stmt_store_result($stmt);
-      $row = mysqli_stmt_num_rows($stmt);
-
-      if ($row > 0) {
-        //send a 200 message
-        echo "This works";
-        var_dump(http_response_code(200));
-      } else {
-        echo "This field";
-        var_dump(http_response_code(401));
+      //check if the statement executed
+      if(mysqli_stmt_execute($stmt)){
+        echo "Edit Complete";
+      }else{
+        echo "Something was not enter right";
       }
+
+
       //free the memory
       mysqli_stmt_free_result($stmt);
 

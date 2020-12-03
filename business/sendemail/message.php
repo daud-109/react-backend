@@ -21,11 +21,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       require_once '../function.php';
 
       //declare the variable
-      $date = "";
+      $starting_date = $end_date = "";
 
       //Post variables 
-      $date = htmlspecialchars($_POST['dateOfCase']);
-      echo $date;
+      $starting_date = htmlspecialchars($_POST['starting_date']);
+      $end_date = htmlspecialchars($_POST['end_date']);
+
       //$subject = htmlentities($_POST['subject']);
       //$message =htmlentities($_POST['message']);
 
@@ -40,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //This query will help us get the patron id form the
         //spreadsheet. Which will help us get the email of the
         //patron form the patron table.
-        $spreadsheet_query = "SELECT * FROM spreadsheet where business_id = ? and sheet_date = ?";
+        $spreadsheet_query = "SELECT * FROM spreadsheet WHERE business_id = ? AND sheet_date BETWEEN ? AND ?";
         $spreadsheet_stmt = mysqli_stmt_init($conn);
 
         //if the query does not run
@@ -49,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
           //bind the pass value
-          mysqli_stmt_bind_param($spreadsheet_stmt, "is", $business_id, $date);
+          mysqli_stmt_bind_param($spreadsheet_stmt, "iss", $business_id, $starting_date, $end_date);
 
           //execute the statement
           mysqli_stmt_execute($spreadsheet_stmt);
@@ -61,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           //no data available for that date
           if (!$result) {
             //you might have to change the errorrrrr
-            die("No data for that date ");
+            die("No data for that date");
           } else {
             //this array will store the patron id
             $patron_id_array = array();
@@ -145,12 +146,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $mail->Body    = 'This is website test';
 
             //send the mail
-            $mail->send();
+            if($mail->send()){
+              echo "Email was send";
+            }else{
+              echo "Email was not send";
+            }
             
             //encode json file
             //$json = json_encode($patron_email_array, JSON_PRETTY_PRINT);
-
-            //send mail is going inside the loop, the first par is $row['email'], the send one is $subject, and the third one is email
            
             //free the memory
             mysqli_stmt_free_result($patron_stmt);

@@ -1,10 +1,10 @@
 <?php
 
 //include the file to connect with mysql 
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //set the patron id
-$patron_id = 1;
+$patron_id = $_SESSION['patron_id'];
 
 //search by the patron id and also will us get the date
 $spreadsheet_query = "SELECT * FROM spreadsheet where patron_id = ?";
@@ -15,7 +15,6 @@ if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
 
   //terminate teh program
   die("Fatal error the spreadsheet select query did not run");
-
 } else {
 
   //bind the variable to prepare the statement
@@ -32,7 +31,6 @@ if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
 
     //terminate
     die("Fatal error, no data");
-
   } else {
 
     //Now search for business to get the location
@@ -44,7 +42,6 @@ if (!mysqli_stmt_prepare($spreadsheet_stmt, $spreadsheet_query)) {
 
       //terminate 
       die("Fatal error for the business query");
-
     } else {
 
       //Make array which get encode it into json

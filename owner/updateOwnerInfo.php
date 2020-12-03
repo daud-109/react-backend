@@ -33,8 +33,7 @@ if (isset($_SESSION['owner_id'])) {
   }
 
   //check if the email is taken
-
-
+  
   //Update the owner info
   $query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ?, hash_password = ?
    where id = ?";
@@ -52,18 +51,13 @@ if (isset($_SESSION['owner_id'])) {
     //bind the variable to prepare the statement
     mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $hash_password, $id);
 
-    //execute the statement
-    mysqli_stmt_execute($stmt);
-
-    //know check if the statement was affected
-    mysqli_stmt_store_result($stmt);
-    $row = mysqli_stmt_num_rows($stmt);
-
-    if ($row === 1) {
-      //send a 200 message
-      var_dump(http_response_code(200));
-    }else {
-      var_dump(http_response_code(401));
+    //Check if the statement got executed
+    if (mysqli_stmt_execute($stmt)){
+      //send successful message
+      echo "Successful";
+    }else{
+      //this might be if the email is taken
+      echo "Email is taken";
     }
 
     //free the memory

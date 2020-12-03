@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   //Start session
   session_start();
-  
+
   //check if the user is logged-in
   if (isset($_SESSION['owner_id'])) {
 
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     //Post variables 
     $street = htmlspecialchars($_POST['street']);
-    
+
     //check if the post is empty
     if (empty($street)) {
       die("Fatal error, value was enter");
@@ -59,28 +59,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($row = mysqli_fetch_assoc($result)) {
 
           //now check if the street match
-          if ($street == $row['street']) {
-            
+          if ($street === $row['street']) {
+
             //store the session 
             $_SESSION['business_id'] = $row['id'];
 
-            die("You have selected");
+            //display successful message
+            echo "You have selected";
           } else {
-            die("Fatal error when matching the street");
+
+            //if the street did not match
+            echo "Fatal error when matching the street";
           }
         } else {
-          die("Fatal error");
+
+          //if no data is fetch
+          echo "No data was fetch";
         }
       }
     }
-    
+
+    //free the memory
+    mysqli_stmt_free_result($stmt);
+
+    //close the statement
+    mysqli_stmt_close($stmt);
+
     //close the connection
     mysqli_close($conn);
   } else {
+
     //if they are not logged-in
     die("You must login");
   }
 } else {
+
   //send error if the user try to get inside
   //the website without clicking the button
   die(http_response_code(404));

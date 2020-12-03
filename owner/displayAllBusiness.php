@@ -43,7 +43,7 @@ if (isset($_SESSION['owner_id'])) {
 
     //if nothing is fetch than send error
     if (!$result) {
-      echo "Fatal error";
+      echo "Fatal error with result";
 
       //check which error you want to send
       die(http_response_code(409)); //conflict
