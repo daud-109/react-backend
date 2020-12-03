@@ -11,8 +11,8 @@
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //include the file to connect with mysql 
-  require_once 'mysqlConn.php';
-  require_once 'function.php';
+  require_once '../mysqlConn.php';
+  require_once '../function.php';
 
   //Assign everything empty string
   $email = $password = "";

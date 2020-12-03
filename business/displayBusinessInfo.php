@@ -28,10 +28,7 @@ if (isset($_SESSION['owner_id'])) {
     if (!mysqli_stmt_prepare($business_stmt, $business_query)) {
 
       //display error and make sureeeeeeee to remove thisssss
-      echo "Fatal error the business select query failed";
-
-      //terminate the program
-      die(http_response_code(409)); //needdd to change this later
+      die("Fatal error the business select query failed");
 
     } else {
       //bind the variable to prepare the statement

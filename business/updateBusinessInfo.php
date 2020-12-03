@@ -12,8 +12,8 @@ if (isset($_SESSION['owner_id'])) {
   //check if the user selected a business
   if (isset($_SESSION['business_id'])) {
     //include the file to connect with mysql 
-    require_once 'mysqlConn.php';
-    require_once 'function.php';
+    require_once '../mysqlConn.php';
+    require_once '../function.php';
 
     //set the business id
     $id = $_SESSION['business_id'];

@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_SESSION['business_id'])) {
       //include the file to connect with mysql 
       require_once 'email.php';
-      require_once 'mysqlConn.php';
-      require_once 'function.php';
+      require_once '../mysqlConn.php';
+      require_once '../function.php';
 
       //declare the variable
       $date = "";

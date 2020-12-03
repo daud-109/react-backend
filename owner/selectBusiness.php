@@ -18,8 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_SESSION['owner_id'])) {
 
     //include the file to connect with mysql 
-    require_once 'mysqlConn.php';
-    require_once 'function.php';
+    require_once '../mysqlConn.php';
+    require_once '../function.php';
 
     //Unset the business session to 
     //start new session
@@ -63,8 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             //store the session 
             $_SESSION['business_id'] = $row['id'];
-            
-            die(http_response_code(200));
+
+            die("You have selected");
           } else {
             die("Fatal error when matching the street");
           }

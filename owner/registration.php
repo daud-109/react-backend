@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $description = $street = $town = $zip  = $county = "";
 
   //include the file to connect with mysql 
-  require_once 'mysqlConn.php';
-  require_once 'function.php';
+  require_once '../mysqlConn.php';
+  require_once '../function.php';
 
   //This will go in the owner table
   $first_name = htmlspecialchars($_POST['firstName']);
@@ -39,8 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
 
     //send error message
-    echo json_encode(["sent" => false, "message" => "Please enter all the value"]);
-    die();
+    die("Please enter all the value");
   }
 
   //Check if the email exits in the database.
@@ -69,8 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     //So if one row is effect that mean email exits.
     if ($row > 0) {
       //Display error
-      die(json_encode(["sent" => false, "message" => "Email is taken"]));
-      die(http_response_code(500));
+      die("Email is taken");
     } else {
 
       //use the place holder to add the data into the Owner table
@@ -115,8 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         //close the statement
         mysqli_stmt_close($stmt);
-
-        echo json_encode(["sent" => true, "message" => "Successful register"]);
+        
+        //send message
+        echo "Successfully Register";
         var_dump(http_response_code(200));
       }
     }

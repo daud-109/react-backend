@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   if (isset($_SESSION['owner_id'])) {
 
     //include the file to connect with mysql 
-    require_once 'mysqlConn.php';
-    require_once 'function.php';
+    require_once '../mysqlConn.php';
+    require_once '../function.php';
 
     //set the owner id to variable
     $owner_id = $_SESSION['owner_id'];
@@ -51,8 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       //Provide the the statement to bind, provide the type of variable and the variable itself.
       mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $name, $type, $email, $phone, $description, $street, $town, $zip, $county);
 
-      //execute the data provide by the user and the sql stamens.
-      mysqli_stmt_execute($stmt);
+      //check if the business is added
+      if (mysqli_stmt_execute($stmt)) {
+        echo "It add new business";
+      } else {
+        echo "Failed to add new business";
+      }
     }
 
     //free the memory
@@ -62,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     mysqli_stmt_close($stmt);
 
     //maybe display a message
-   
+
     var_dump(http_response_code(200));
 
     //close the connection 
@@ -73,5 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 } else {
 
   //send error because user try to get inside the file without clicking on the submit button
+  echo "Not allowed";
   die(http_response_code(404));
 }
