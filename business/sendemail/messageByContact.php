@@ -65,16 +65,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             while ($row = mysqli_fetch_assoc($result)) {
 
               //this array will hold all the email patron
-              $to_array[$i] = $row['email'];
-              $i++;
+              // $to_array[$i] = $row['email'];
+              // $i++;
+              
+            //email setting
+            $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
+            $mail->addAddress($row['email']);
             }
 
             //this hold all of the email of the patron
-            $to = implode(",", $to_array);
+            //$to = implode(",", $to_array);
 
-            //email setting
-            $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
-            $mail->addAddress($to);
             $mail->Subject = $subject;
             $mail->Body    = $message;
 

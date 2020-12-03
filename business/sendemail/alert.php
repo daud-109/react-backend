@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       //Post variables 
       $starting_date = htmlspecialchars($_POST['starting_date']);
       $end_date = htmlspecialchars($_POST['end_date']);
+      $message = htmlspecialchars($_POST['message']);
 
       //check if the date is empty
       if (empty($starting_date) || empty($end_date)) {
@@ -66,19 +67,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             while ($row = mysqli_fetch_assoc($result)) {
 
               //this will get the contact
-              $to_array[$i] = $row['email'];
-              $i++;
+              // $to_array[$i] = $row['email'];
+              // $i++;
+              //email setting
+              $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
+              $mail->addAddress($row['email']);
             }
 
             //this hold all the contact with comma
             //in between the emails
-            $to = implode(",", $to_array);
+            //$to = implode(",", $to_array);
 
-            //email setting
-            $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
-            $mail->addAddress($to);
             $mail->Subject = 'Website subject';
-            $mail->Body    = 'This is website test';
+            
+            if($message){
+              $mail->Body = $message;
+            }else{
+              $mail->Body    = 'This is website test';  
+            }
 
             //send the mail
             if ($mail->send()) {
