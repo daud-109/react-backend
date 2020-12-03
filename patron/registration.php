@@ -6,6 +6,7 @@
 **Then register the user.
 */
 header('Content-Type: application/json');
+
 //Make sure the user got to this page by hitting the 
 //submitting the button and not by typing the description.
 if ($_SERVER['REQUEST_METHOD'] === "POST") {

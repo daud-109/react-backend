@@ -20,7 +20,7 @@ if (isset($_SESSION['owner_id'])) {
     $business_id = $_SESSION['business_id'];
 
     //This query will get patron info
-    $query = "SELECT p.first_name, p.last_name, p.email, s.temperature, s.sheet_date FROM spreadsheet s, patron p where s.business_id = ? and  s.patron_id = p.id ORDER BY s.sheet_date DESC";
+    $query = "SELECT p.first_name, p.last_name, p.email, s.temperature, s.sheet_date FROM spreadsheet AS s, patron AS p where s.business_id = ? and  s.patron_id = p.id ORDER BY s.sheet_date DESC";
     $stmt = mysqli_stmt_init($conn);
 
     //if the query does not run
