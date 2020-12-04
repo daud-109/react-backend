@@ -23,15 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       require_once '../../function.php';
 
       //declare the variable
-      $contact_all = $subject = $message = "";
+      $subject = $message = "";
 
       //Post variables 
-      $contact_all = htmlspecialchars($_POST['contact_all']);
       $subject = htmlspecialchars($_POST['subject']);
       $message = htmlspecialchars($_POST['message']);
 
       //check if the date is empty
-      if (empty($contact_all) || empty($subject) || empty($message)) {
+      if (empty($subject) || empty($message)) {
         //make sure the user enter the value
         die("Make sure all the value are enter");
       } else {
@@ -73,12 +72,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //email setting
             $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
             $mail->addAddress($row['email']);
-            }
 
-            //this hold all of the email of the patron
-            //$to = implode(",", $to_array);
-
-            $mail->Subject = $subject . " " . $row['name'];
+            //subject and message of the email
+            $mail->Subject = $subject . " " . $business_row['name'];
             $mail->Body    = $message;
 
             //send the mail
@@ -87,6 +83,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } else {
               echo "Email was not send";
             }
+            }
+
+            //this hold all of the email of the patron
+            //$to = implode(",", $to_array);
+
           } else {
             echo "Statement was not executed";
           }

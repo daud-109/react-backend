@@ -20,15 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       //include the file to connect with mysql 
       require_once 'email.php';
       require_once 'businessInfoEmail.php'; //this file wil help to send business info
-      
+
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
       //declare the variable
-      $selected_date = $subject = $message = "";
+      $start_date = $end_date = $subject = $message = "";
 
       //Post variables 
-      $selected_date = htmlspecialchars($_POST['selected_date']);
+      $start_date = htmlspecialchars($_POST['start_date']);
+      $end_date = htmlspecialchars($_POST['end_date']);
       $subject = htmlspecialchars($_POST['subject']);
       $message = htmlspecialchars($_POST['message']);
 
@@ -74,20 +75,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               //email setting
               $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
               $mail->addAddress($row['email']);
+
+              //subject and message
+              $mail->Subject = $subject . " " . $business_row['name'];
+              $mail->Body    = $message;
+
+              //send the mail
+              if ($mail->send()) {
+                echo "Email was send";
+              } else {
+                echo "Email was not send";
+              }
             }
 
             //this hold all of the email of the patron
             //$to = implode(",", $to_array);
 
-            $mail->Subject = $subject . " " . $row['name'];
-            $mail->Body    = $message;
 
-            //send the mail
-            if ($mail->send()) {
-              echo "Email was send";
-            } else {
-              echo "Email was not send";
-            }
           } else {
             echo "Statement was not executed";
           }

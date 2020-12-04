@@ -74,29 +74,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               //email setting
               $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
               $mail->addAddress($row['email']);
+
+              //subject
+              $mail->Subject = 'Website subject' . " " . $business_row['name'];
+
+              //if the business want to send a message
+              if ($message) {
+                $mail->Body = $message;
+              } else {
+                $mail->Body = "This is website test.";
+              }
+
+              //send the mail
+              if ($mail->send()) {
+                //if email is send
+                echo "Email was send";
+
+                //if the email is not send
+              } else {
+                echo "Email was not send";
+              }
             }
 
             //this hold all the contact with comma
             //in between the emails
             //$to = implode(",", $to_array);
 
-            $mail->Subject = 'Website subject';
-
-            if ($message) {
-              $mail->Body = $message . " ". $row['name'];
-            } else {
-              $mail->Body = "This is website test. {$row['name']}";
-            }
-
-            //send the mail
-            if ($mail->send()) {
-              //if email is send
-              echo "Email was send";
-
-              //if the email is not send
-            } else {
-              echo "Email was not send";
-            }
 
             //if the query did not executed
           } else {

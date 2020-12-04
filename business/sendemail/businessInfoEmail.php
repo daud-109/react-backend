@@ -38,7 +38,7 @@ if (isset($_SESSION['owner_id'])) {
         $result = mysqli_stmt_get_result($stmt);
 
         //get the fetch array to set the data
-        $row = mysqli_fetch_assoc($result);
+        $business_row = mysqli_fetch_assoc($result);
       } else {
         //error for execute
         echo "Something went wrong with execute ";
