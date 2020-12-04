@@ -47,7 +47,7 @@ if (isset($_SESSION['owner_id'])) {
           $display_notification_date[$i]  = ["notification_date" => $row['notification_date']];
           $i++;
         }
-
+        
         //encode the array into json formate
         $json = json_encode($display_notification_date, JSON_PRETTY_PRINT);
 

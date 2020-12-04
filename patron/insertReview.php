@@ -12,10 +12,15 @@ if (isset($_SESSION['patron_id'])) {
 
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
+  
+  //declare the variable
+  $mask_rating = $social_distance_rating =  $sanitize_rating = $comment = "";
 
   //set the patron id
   $patron_id = $_SESSION['patron_id'];
   
+
+  //check if the patron allow to write the review
 } else {
   //send error message
   die("Please Log-in");

@@ -20,10 +20,10 @@ if (isset($_SESSION['owner_id'])) {
   $first_name = $last_name = $email = $password = "";
 
   //Post variable here and fill in the post variable name
-  $first_name = htmlspecialchars($_POST['']);
-  $last_name = htmlspecialchars($_POST['']);
-  $email = htmlspecialchars($_POST['']);
-  $password = htmlspecialchars($_POST['']);
+  $first_name = htmlspecialchars($_POST['first_name']);
+  $last_name = htmlspecialchars($_POST['last_name']);
+  $email = htmlspecialchars($_POST['email']);
+  $password = htmlspecialchars($_POST['password']);
 
 
   //If any variable are empty send an error message. 

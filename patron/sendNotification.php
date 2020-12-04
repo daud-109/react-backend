@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $today_date = date("Y-m-d");
 
     //search for business id to store in notification table
-    $query = "SELECT DISTINCT business_id FROM spreadsheet where patron_id = ?";
+    $query = "SELECT DISTINCT business_id FROM spreadsheet where patron_id = ? ORDER BY business_id";
     $stmt = mysqli_stmt_init($conn);
 
     //if the query does not run
@@ -48,17 +48,53 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         //terminate the program
         die("Fatal error the notification insert query did not run");
       } else {
-        while ($row = mysqli_fetch_assoc($result)) {
-          //Provide the the statement to bind
-          mysqli_stmt_bind_param($insert_stmt, "iis", $row['business_id'], $patron_id, $today_date);
 
-          //execute the delete statement
-          if (!mysqli_stmt_execute($insert_stmt)) {
-            echo "It did not executed the insert. ";
+        //so in order to make sure no duplication is inserted I have
+        //to do select query and then look for the matches 
+        $check_query = "SELECT * FROM notification WHERE business_id = ? AND patron_id = ? AND notification_date = ?";
+        $check_stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($check_stmt, $check_query)) {
+          //terminate
+          die("Fatal error the select notification query failed");
+        } else {
+
+
+          while ($row = mysqli_fetch_assoc($result)) {
+
+            //bind the variable
+            mysqli_stmt_bind_param($check_stmt, "iis", $row['business_id'], $patron_id, $today_date);
+
+            //execute
+            mysqli_stmt_execute($check_stmt);
+
+            mysqli_stmt_store_result($check_stmt);
+
+            $check_row = mysqli_stmt_num_rows($check_stmt);
+
+            if ($check_row < 1) {
+              //Provide the the statement to bind
+              mysqli_stmt_bind_param($insert_stmt, "iis", $row['business_id'], $patron_id, $today_date);
+
+              //execute the delete statement
+              if (!mysqli_stmt_execute($insert_stmt)) {
+                echo "It did not executed the insert. ";
+              } else {
+                echo "Notification send ";
+              }
+            } else {
+              echo "Same\n";
+            }
           }
         }
       }
     }
+
+    //free the memory
+    mysqli_stmt_free_result($check_stmt);
+
+    //close the statement
+    mysqli_stmt_close($check_stmt);
 
     //free the memory
     mysqli_stmt_free_result($stmt);

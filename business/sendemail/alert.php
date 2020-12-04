@@ -18,6 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //include the file to connect with mysql 
       require_once 'email.php';
+      require_once 'businessInfoEmail.php'; //this file wil help to send business info
+
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
@@ -79,11 +81,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //$to = implode(",", $to_array);
 
             $mail->Subject = 'Website subject';
-            
-            if($message){
-              $mail->Body = $message;
-            }else{
-              $mail->Body    = 'This is website test';  
+
+            if ($message) {
+              $mail->Body = $message . " ". $row['name'];
+            } else {
+              $mail->Body = "This is website test. {$row['name']}";
             }
 
             //send the mail

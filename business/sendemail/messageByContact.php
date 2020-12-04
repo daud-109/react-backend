@@ -15,8 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //check which business is selected
     if (isset($_SESSION['business_id'])) {
 
-      //include the file to connect with mysql 
-      require_once 'email.php';
+      //include the file
+      require_once 'email.php'; //this will help with sending email
+      require_once 'businessInfoEmail.php'; //this file wil help to send business info
+      
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
@@ -76,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //this hold all of the email of the patron
             //$to = implode(",", $to_array);
 
-            $mail->Subject = $subject;
+            $mail->Subject = $subject . " " . $row['name'];
             $mail->Body    = $message;
 
             //send the mail
