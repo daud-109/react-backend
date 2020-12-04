@@ -54,7 +54,6 @@ if (isset($_SESSION['owner_id'])) {
           $i++;
         }
 
-
         //encode the array into json formate
         $json = json_encode($display_table, JSON_PRETTY_PRINT);
 
@@ -66,6 +65,8 @@ if (isset($_SESSION['owner_id'])) {
           echo $json;
         }
       } else {
+        //display an error if the insert statement
+        //does not execute
         echo "The statement did not execute";
       }
     }

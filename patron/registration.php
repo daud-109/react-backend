@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
       //check if the password is in the database
       if ($row['hash_password']) {
-
+        
         //if the password is filled
         echo json_encode(["message" => "Email is taken"], JSON_PRETTY_PRINT);
 
