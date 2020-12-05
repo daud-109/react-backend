@@ -35,7 +35,7 @@ if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip
 } else {
 
   //query to search for business info and review
-  $query = "SELECT business.name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment 
+  $query = "SELECT business.id, business.name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment 
   FROM (business
   INNER JOIN review
   ON business.id = review.business_id)

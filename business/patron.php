@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       $date = htmlspecialchars($_POST['date']);
 
       //if no data is entered
-      if (empty($first_name) && empty($last_name) && empty($email) && empty($temperature) && empty($date)) {
+      if (empty($first_name) || empty($last_name) || empty($email) || empty($temperature) || empty($date)) {
         //display error if the value are empty
         die("Make sure all the values are enter");
       } else {

@@ -11,16 +11,31 @@ session_start();
 if (isset($_SESSION['patron_id'])) {
 
   //include the the display business review file
-  require_once '../displayBusinessReview.php';
+  require_once '../displayBusinessReview1.php';
   
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
   
+  
+
+
   //declare the variable
   $mask_rating = $social_distance_rating =  $sanitize_rating = $comment = "";
 
+  //declare post variable
+  $mask_rating = htmlspecialchars($_POST['mask_rating']);
+  $social_distance_rating = htmlspecialchars($_POST['social_distance_rating']);
+  $sanitize_rating = htmlspecialchars($_POST['sanitize_rating']);
+  $comment = htmlspecialchars($_POST['comment']);
+
+  if (empty($mask_rating) || empty($social_distance_rating) || empty($sanitize_rating) || empty($comment)) {
+    //display error if the value are empty
+    die("Make sure all the values are enter");
+  } 
+
   //set the patron id
   $patron_id = $_SESSION['patron_id'];
+  
   
 
   //check if the patron allow to write the review
