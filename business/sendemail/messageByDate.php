@@ -40,10 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //store the session value
         $business_id = $_SESSION['business_id'];
 
-        require_once 'businessInfoEmail.php'; //this file wil help to send business info
+        //this file wil help to send business info
+        require_once 'businessInfoEmail.php';
         
         //This query will get the email of the patron.
-        $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p where s.business_id = ? and s.patron_id = p.id and s.sheet_date = ? ORDER BY s.patron_id";
+        $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p where s.business_id = ? and s.patron_id = p.id and s.sheet_date BETWEEN ? and ? ORDER BY s.patron_id";
         $stmt = mysqli_stmt_init($conn);
 
         //if the query does not run
@@ -68,29 +69,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             //use the loop to get all the patron email
             while ($row = mysqli_fetch_assoc($result)) {
-
-              //this array will hold all the email patron
-              // $to_array[$i] = $row['email'];
-              // $i++;
               //email setting
               $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
               $mail->addAddress($row['email']);
-
-              //subject and message
-              $mail->Subject = $subject . " " . $business_row['name'];
-              $mail->Body    = $message;
-
-              //send the mail
-              if ($mail->send()) {
-                echo "Email was send";
-              } else {
-                echo "Email was not send";
-              }
             }
 
-            //this hold all of the email of the patron
-            //$to = implode(",", $to_array);
 
+            //subject and message
+            $mail->Subject = $subject . " " . $business_row['name'];
+            $mail->Body    = $message;
+
+            //send the mail
+            if ($mail->send()) {
+              echo "Email was send";
+            } else {
+              echo "Email was not send";
+            }
 
           } else {
             echo "Statement was not executed";

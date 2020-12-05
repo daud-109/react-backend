@@ -21,8 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
-      //store the session value
-      $business_id = $_SESSION['business_id'];
+      //declare the variable
+      $starting_date = $end_date = "";
+
 
       //Post variables 
       $starting_date = htmlspecialchars($_POST['starting_date']);
@@ -35,10 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Make sure all the value are enter");
       } else {
 
-        //declare the variable
-        $starting_date = $end_date = "";
-        
-        require_once 'businessInfoEmail.php'; //this file wil help to send business info
+        //store the session value
+        $business_id = $_SESSION['business_id'];
+
+        //this file wil help to send business info
+        require_once 'businessInfoEmail.php';
 
         //This query will get the email of the patron.
         $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p where s.business_id = ? and s.patron_id = p.id and s.sheet_date BETWEEN ? and ? ORDER BY s.patron_id";
@@ -67,38 +69,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //use this loop to get all the contact
             while ($row = mysqli_fetch_assoc($result)) {
 
-              //this will get the contact
-              // $to_array[$i] = $row['email'];
-              // $i++;
               //email setting
               $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
               $mail->addAddress($row['email']);
-
-              //subject
-              $mail->Subject = 'Website subject' . " " . $business_row['name'];
-
-              //if the business want to send a message
-              if ($message) {
-                $mail->Body = $message;
-              } else {
-                $mail->Body = "This is website test.";
-              }
-
-              //send the mail
-              if ($mail->send()) {
-                //if email is send
-                echo "Email was send";
-
-                //if the email is not send
-              } else {
-                echo "Email was not send";
-              }
             }
 
-            //this hold all the contact with comma
-            //in between the emails
-            //$to = implode(",", $to_array);
+            //subject
+            $mail->Subject = 'Website subject' . " " . $business_row['name'];
 
+            //if the business want to send a message
+            if ($message) {
+              $mail->Body = $message;
+            } else {
+              $mail->Body = "This is website test.";
+            }
+
+            //send the mail
+            if ($mail->send()) {
+              //if email is send
+              echo "Email was send";
+
+              //if the email is not send
+            } else {
+              echo "Email was not send";
+            }
 
             //if the query did not executed
           } else {

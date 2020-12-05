@@ -17,16 +17,15 @@ require_once './mysqlConn.php';
 
 //declare variable
 // $name = $type = $street = $town = $zip = $county = "";
-$name = "Jabberbean"; $type = "Restaurant"; $street = "133 Vera Center"; $town = "Cincinnati"; 
-$zip = "45218"; $county = "Bronx";
+$name = $type =  $street = $town = $zip = $county = "";
 
 //json data
-// $name = htmlspecialchars($data['name']);
-// $type = htmlspecialchars($data['type']);
-// $street = htmlspecialchars($data['street']);
-// $town = htmlspecialchars($data['town']);
-// $zip  = htmlspecialchars($data['zip']);
-// $county = htmlspecialchars($data['county']);
+$name = htmlspecialchars($data['name']);
+$type = htmlspecialchars($data['type']);
+$street = htmlspecialchars($data['street']);
+$town = htmlspecialchars($data['town']);
+$zip  = htmlspecialchars($data['zip']);
+$county = htmlspecialchars($data['county']);
 
 //If any variable is empty send an error message. 
 if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip) || empty($county)) {

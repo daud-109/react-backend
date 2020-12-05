@@ -1,7 +1,6 @@
 <?php
-/*This file will allow the patron to write review
-**and rate the business only if they have been to that
-**business.
+/*This file will check if the patron 
+**have the authority to leave a review
 */
 
 //start the session
@@ -9,15 +8,9 @@ session_start();
 
 //Check if the patron is logged in
 if (isset($_SESSION['patron_id'])) {
-
-  //include the the display business review file
-  require_once '../displayBusinessReview1.php';
-  
+ 
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
-  
-  
-
 
   //declare the variable
   $mask_rating = $social_distance_rating =  $sanitize_rating = $comment = "";

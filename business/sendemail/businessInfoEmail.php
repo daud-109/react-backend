@@ -35,6 +35,3 @@ mysqli_stmt_free_result($stmt);
 
 //close the statement
 mysqli_stmt_close($stmt);
-
-//close the connection
-mysqli_close($conn);
