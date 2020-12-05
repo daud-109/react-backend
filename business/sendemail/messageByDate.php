@@ -19,8 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //include the file to connect with mysql 
       require_once 'email.php';
-      require_once 'businessInfoEmail.php'; //this file wil help to send business info
-
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
@@ -34,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $message = htmlspecialchars($_POST['message']);
 
       //check if the date is empty
-      if (empty($selected_date) || empty($subject) || empty($message)) {
+      if (empty($start_date) || empty($end_date) || empty($subject) || empty($message)) {
         //make sure the user enter the value
         die("Make sure all the value are enter");
       } else {
@@ -42,6 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //store the session value
         $business_id = $_SESSION['business_id'];
 
+        require_once 'businessInfoEmail.php'; //this file wil help to send business info
+        
         //This query will get the email of the patron.
         $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p where s.business_id = ? and s.patron_id = p.id and s.sheet_date = ? ORDER BY s.patron_id";
         $stmt = mysqli_stmt_init($conn);
