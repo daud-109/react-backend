@@ -23,8 +23,7 @@ if (isset($_SESSION['patron_id'])) {
 
     //if the business query failed
     if (!mysqli_stmt_prepare($stmt, $query)) {
-
-      //display error and make sureeeeeeee to remove thisssss
+      //display error 
       die("Fatal error the business select query failed");
     } else {
       //bind the variable to prepare the statement
@@ -68,7 +67,7 @@ if (isset($_SESSION['patron_id'])) {
 
 } else {
 
-  //displayyyy errorr remove this later
+  //display error
   echo "Log in please";
 
   //if the business owner is not logged in

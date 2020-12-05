@@ -9,7 +9,9 @@ session_start();
 
 //Check if the patron is logged in
 if (isset($_SESSION['patron_id'])) {
- 
+
+  //now check if the user click the submit button submitton 
+  
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
 
@@ -25,12 +27,11 @@ if (isset($_SESSION['patron_id'])) {
   if (empty($mask_rating) || empty($social_distance_rating) || empty($sanitize_rating) || empty($comment)) {
     //display error if the value are empty
     die("Make sure all the values are enter");
+  }else{
+    //set the patron id
+    $patron_id = $_SESSION['patron_id'];
+    
   } 
-
-  //set the patron id
-  $patron_id = $_SESSION['patron_id'];
-  
-  
 
   //check if the patron allow to write the review
 } else {

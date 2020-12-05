@@ -29,8 +29,7 @@ if (isset($_SESSION['patron_id'])) {
 
   //if the query does not run
   if (!mysqli_stmt_prepare($stmt, $query)) {
-
-    //terminate teh program
+    //terminate the program
     die("Fatal error the spreadsheet select query did not run");
   } else {
 

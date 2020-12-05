@@ -1,6 +1,7 @@
 <?php
 /*Display all of the business so the 
-**user can select a business 
+**user can select a business to check
+**for the review of the business
 */
 header('Content-Type: application/json');
 

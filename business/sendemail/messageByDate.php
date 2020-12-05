@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
           //bind the pass value
-          mysqli_stmt_bind_param($stmt, "is", $business_id, $selected_date);
+          mysqli_stmt_bind_param($stmt, "iss", $business_id, $start_date, $end_date);
 
           //Check if the statement executed
           if (mysqli_stmt_execute($stmt)) {

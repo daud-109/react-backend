@@ -16,7 +16,6 @@ header('Content-Type: application/json');
 require_once './mysqlConn.php';
 
 //declare variable
-// $name = $type = $street = $town = $zip = $county = "";
 $name = $type =  $street = $town = $zip = $county = "";
 
 //json data
@@ -76,7 +75,7 @@ if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip
       $json = json_encode($business_review_array, JSON_PRETTY_PRINT);
       
       //display the json
-      //echo $json;
+      echo $json;
 
     }else{ 
       echo "Fatal error with execute statement";

@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $password = htmlspecialchars($_POST['password']);
 
   //Check if the user enter all the data
-  if (!(empty($email) && empty($password))) { 
+  if (isset($email) && isset($password)) {
 
     //Select all the field from the table and
     //run the query.
@@ -33,35 +33,39 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
       //actually running the query
       mysqli_stmt_bind_param($stmt, "s", $email);
-      mysqli_stmt_execute($stmt);
 
-      //get the result
-      $result = mysqli_stmt_get_result($stmt);
+      if (mysqli_stmt_execute($stmt)) {
+        //get the result
+        $result = mysqli_stmt_get_result($stmt);
 
-      //check if there is some data with the given email
-      if ($row = mysqli_fetch_assoc($result)) {
-        //This variable will be set to boolean variable.
-        $password_check = password_verify($password, $row['hash_password']); //Check if the password match
+        //check if there is some data with the given email
+        if ($row = mysqli_fetch_assoc($result)) {
+          
+          //This variable will be set to boolean variable.
+          $password_check = password_verify($password, $row['hash_password']); //Check if the password match
 
-        //Check if the variable is correct than start the session.
-        if ($password_check == TRUE) {
+          //Check if the variable is correct than start the session.
+          if ($password_check == TRUE) {
 
-          //start session
-          session_start();
+            //start session
+            session_start();
 
-          //set session variable
-          $_SESSION['patron_id'] = $row['id']; //set the session value
+            //set session variable
+            $_SESSION['patron_id'] = $row['id']; //set the session value
 
-          //send successful message
-          var_dump(http_response_code(200));
+            //send successful message
+            var_dump(http_response_code(200));
+          } else {
+            //echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+            die(http_response_code(401));
+          }
         } else {
-          //echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
+          //if nothing is fetch from the data base that mean there is no email in the database. 
+          echo "Email or Password is not correct";
           die(http_response_code(401));
         }
       } else {
-        //if nothing is fetch from the data base that mean there is no email in the database. 
-        echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
-        die(http_response_code(401));
+        echo "Fatal error with execute statement";
       }
     } else {
       //if the query does not run display this message
