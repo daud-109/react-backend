@@ -32,7 +32,7 @@ if (isset($_SESSION['patron_id'])) {
     die("Please enter all the value");
   }
 
-  //check if the email is taken
+  //check for the password confirmation
   
   //Update the owner info
   $query = "UPDATE patron SET first_name = ?, last_name = ?, email = ?, hash_password = ?

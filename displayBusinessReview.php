@@ -5,9 +5,9 @@
 */
 
 //this will helps us read the json file
-header("Access-Control-Allow-Origin: *");
-$json = file_get_contents("php://input");
-$data = json_decode($json, true);
+// header("Access-Control-Allow-Origin: *");
+// $json = file_get_contents("php://input");
+// $data = json_decode($json, true);
 
 //this will help us send json file
 header('Content-Type: application/json');
@@ -16,7 +16,7 @@ header('Content-Type: application/json');
 require_once './mysqlConn.php';
 
 //declare variable
-$name = $type =  $street = $town = $zip = $county = "";
+$name = $type = $street =  $town = $zip = $county = "";
 
 //json data
 $name = htmlspecialchars($data['name']);
@@ -65,8 +65,7 @@ if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip
       while ($row = mysqli_fetch_assoc($result)) {
 
         //this array will hold business name and review about the business
-        $business_review_array[$i] = ["name" => $row['name'], "mask_rating" => $row['mask_rating'], "social_distance_rating" => $row['social_distance_rating'], "comment" => $row['comment']];
-        print_r($row);
+        $business_review_array[$i] = ["name" => $row['name'], "mask_rating" => $row['mask_rating'], "social_distance_rating" => $row['social_distance_rating'], "sanitize_rating" => $row["sanitize_rating"],"comment" => $row['comment']];
         //increment
         $i++;
       }
