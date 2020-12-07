@@ -22,16 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       require_once '../../function.php';
 
       //declare the variable
-      $starting_date = $end_date = "";
+      $start_date = $end_date = "";
 
 
       //Post variables 
-      $starting_date = htmlspecialchars($_POST['starting_date']);
+      $start_date = htmlspecialchars($_POST['start_date']);
       $end_date = htmlspecialchars($_POST['end_date']);
       $message = htmlspecialchars($_POST['message']);
 
       //check if the date is empty
-      if (empty($starting_date) || empty($end_date)) {
+      if (empty($start_date) || empty($end_date)) {
         //make sure the user enter the value
         die("Make sure all the value are enter");
       } else {
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
           //bind the pass value
-          mysqli_stmt_bind_param($stmt, "iss", $business_id, $starting_date, $end_date);
+          mysqli_stmt_bind_param($stmt, "iss", $business_id, $start_date, $end_date);
 
           //Check if the statement executed
           if (mysqli_stmt_execute($stmt)) {
@@ -70,18 +70,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             while ($row = mysqli_fetch_assoc($result)) {
 
               //email setting
-              $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
+              $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
               $mail->addAddress($row['email']);
             }
 
             //subject
-            $mail->Subject = 'Website subject' . " " . $business_row['name'];
+            $mail->Subject = 'COVID-19 Alert at' . " " . $business_row['name'];
 
             //if the business want to send a message
             if ($message) {
               $mail->Body = $message;
             } else {
-              $mail->Body = "This is website test.";
+              $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19.";
             }
 
             //send the mail

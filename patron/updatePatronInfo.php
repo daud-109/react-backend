@@ -25,7 +25,6 @@ if (isset($_SESSION['patron_id'])) {
   $email = htmlspecialchars($_POST['email']);
   $password = htmlspecialchars($_POST['password']);
 
-
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
     //Error message

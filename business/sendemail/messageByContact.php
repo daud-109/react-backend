@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //use the loop to get all the patron email
             while ($row = mysqli_fetch_assoc($result)) {
               //email setting
-              $mail->setFrom('phpseniorproject@gmail.com', 'Email Test');
+              $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
               $mail->addAddress($row['email']);
             }
 

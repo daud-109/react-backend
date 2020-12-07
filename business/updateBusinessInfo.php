@@ -31,7 +31,7 @@ if (isset($_SESSION['owner_id'])) {
     $town = htmlspecialchars($_POST['town']);
     $zip  = htmlspecialchars($_POST['zip']);
     $county = htmlspecialchars($_POST['county']);
-
+   
     //If any variable are empty send an error message. 
     if (empty($name) || empty($type) || empty($email) || empty($phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
       //Error message
