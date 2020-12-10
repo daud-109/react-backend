@@ -75,6 +75,7 @@ if (isset($_SESSION['patron_id'])) {
 
           $check_row = mysqli_stmt_num_rows($check_stmt);
 
+          //check if the data was already submitted
           if ($check_row < 1) {
             //Provide the the statement to bind
             mysqli_stmt_bind_param($insert_stmt, "iis", $row['business_id'], $patron_id, $date_of_positive);
@@ -83,11 +84,18 @@ if (isset($_SESSION['patron_id'])) {
             if (!mysqli_stmt_execute($insert_stmt)) {
               echo "It did not executed the insert. ";
             } else {
-              echo "Notification send ";
+              //include this file to send auto email
+              require_once "../business/sendemail/autoEmail.php";
             }
           } else {
             echo "Same\n";
           }
+        }
+        
+        //now here when the all of the data is store inside the notification table
+        //then you can 
+        if($check_row < 1){
+          
         }
       }
     }

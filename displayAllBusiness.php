@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 require_once './mysqlConn.php';
 
 //Select all of the business
-$query = "SELECT name, type, street, town, zip, county FROM business";
+$query = "SELECT id, name, type, street, town, zip, county FROM business";
 $stmt = mysqli_stmt_init($conn);
 
 //if the business query is not setup properly
@@ -32,7 +32,7 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
     //get the the data in associated array manner
     while($row = mysqli_fetch_assoc($result)){
       //store the data inside the array
-      $business_info[$i] = ["name" => $row['name'], "type" => $row['type'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']];
+      $business_info[$i] = ["id" => $row['id'],"name" => $row['name'], "type" => $row['type'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']];
 
       //increment
       $i++;

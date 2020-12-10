@@ -61,7 +61,7 @@ if (isset($_SESSION['owner_id'])) {
       while ($row = mysqli_fetch_assoc($result)) {
 
         //store the data inside the array
-        $display_business[$i] = ["name" => $row['name'], "type" => $row['type'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']];
+        $display_business[$i] = ["id" => $row['id'], "name" => $row['name'], "type" => $row['type'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']];
 
         $i++;
       }

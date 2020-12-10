@@ -19,18 +19,13 @@ if (isset($_SESSION['patron_id'])) {
   require_once '../mysqlConn.php';
 
   //declare variable
-  $name = $type =  $street = $town = $zip = $county = "";
+  $id = "";
 
   //json data
-  $name = htmlspecialchars($data['name']);
-  $type = htmlspecialchars($data['type']);
-  $street = htmlspecialchars($data['street']);
-  $town = htmlspecialchars($data['town']);
-  $zip  = htmlspecialchars($data['zip']);
-  $county = htmlspecialchars($data['county']);
+  $id = htmlspecialchars($data['id']);
 
   //If any variable is empty send an error message. 
-  if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+  if (empty($id)) {
     //Error message
     die("The json value send was empty");
   } else {
@@ -42,7 +37,7 @@ if (isset($_SESSION['patron_id'])) {
     FROM (business 
     INNER JOIN spreadsheet
     ON business.id = spreadsheet.business_id)
-    WHERE spreadsheet.patron_id = ? AND  business.name = ? AND business.type = ? AND business.street = ? AND business.town = ? AND business.zip = ? AND business.county= ?";
+    WHERE spreadsheet.patron_id = ? AND  business.id = ?";
 
     //initialize the statement
     $stmt = mysqli_stmt_init($conn);
@@ -53,7 +48,7 @@ if (isset($_SESSION['patron_id'])) {
     } else {
 
       //bind the variable to prepare the statement
-      mysqli_stmt_bind_param($stmt, "issssss", $patron_id, $name, $type, $street, $town, $zip, $county);
+      mysqli_stmt_bind_param($stmt, "ii", $patron_id, $id);
 
       //check if it executed
       if (mysqli_stmt_execute($stmt)) {
@@ -75,7 +70,15 @@ if (isset($_SESSION['patron_id'])) {
     }
   }
 
-  //check if the patron allow to write the review
+  //free the memory
+  mysqli_stmt_free_result($stmt);
+
+  //close the statement
+  mysqli_stmt_close($stmt);
+
+  //close the connection 
+  mysqli_close($conn);
+  
 } else {
   //send error message
   die("Please Log-in");

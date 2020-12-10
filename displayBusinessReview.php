@@ -5,9 +5,9 @@
 */
 
 //this will helps us read the json file
-// header("Access-Control-Allow-Origin: *");
-// $json = file_get_contents("php://input");
-// $data = json_decode($json, true);
+header("Access-Control-Allow-Origin: *");
+$json = file_get_contents("php://input");
+$data = json_decode($json, true);
 
 //this will help us send json file
 header('Content-Type: application/json');
@@ -16,18 +16,14 @@ header('Content-Type: application/json');
 require_once './mysqlConn.php';
 
 //declare variable
-$name = $type = $street =  $town = $zip = $county = "";
+$id = "";
 
 //json data
-$name = htmlspecialchars($data['name']);
-$type = htmlspecialchars($data['type']);
-$street = htmlspecialchars($data['street']);
-$town = htmlspecialchars($data['town']);
-$zip  = htmlspecialchars($data['zip']);
-$county = htmlspecialchars($data['county']);
+$id = htmlspecialchars($data['id']);
+
 
 //If any variable is empty send an error message. 
-if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+if (empty($id)) {
   //Error message
   die("Please enter all the value");
 } else {
@@ -37,7 +33,7 @@ if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip
   FROM (business
   INNER JOIN review
   ON business.id = review.business_id)
-  WHERE business.name = ? AND business.type = ? AND business.street = ? AND business.town = ? AND business.zip = ? AND business.county= ?";
+  WHERE business.id = ?";
   $stmt = mysqli_stmt_init($conn);
 
   //Check if the query failed
@@ -46,7 +42,7 @@ if (empty($name) || empty($type) || empty($street) || empty($town) || empty($zip
   } else {
 
     //bind the variable to prepare the statement
-    mysqli_stmt_bind_param($stmt, "ssssss", $name, $type, $street, $town, $zip, $county);
+    mysqli_stmt_bind_param($stmt, "id", $id);
 
     //check if the statement executed and
     //store the data

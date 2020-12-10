@@ -44,7 +44,7 @@ if (isset($_SESSION['owner_id'])) {
 
         //this loop will get the date and store it in array
         while ($row = mysqli_fetch_assoc($result)) {
-          $display_notification_date = ["positive_date" => $row['positive_date'], ];
+          $display_notification_date[$i] = ["positive_date" => $row['positive_date']];
           $i++;
         }
         
