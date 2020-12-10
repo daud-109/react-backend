@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_SESSION['business_id'])) {
 
       //include the file to connect with mysql 
-      require_once 'email.php';
+      require_once './email.php';
       require_once '../../mysqlConn.php';
       require_once '../../function.php';
 
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         require_once 'businessInfoEmail.php';
 
         //This query will get the email of the patron.
-        $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p where s.business_id = ? and s.patron_id = p.id and s.sheet_date BETWEEN ? and ? ORDER BY s.patron_id";
+        $query = "SELECT DISTINCT s.patron_id, p.email FROM spreadsheet  AS s, patron AS p WHERE s.business_id = ? AND s.patron_id = p.id AND s.sheet_date BETWEEN ? AND ? ORDER BY s.patron_id";
         $stmt = mysqli_stmt_init($conn);
 
         //if the query does not run

@@ -17,26 +17,87 @@ if (isset($_SESSION['owner_id'])) {
   $id = $_SESSION['owner_id'];
 
   //declare variable here
-  $first_name = $last_name = $email = $password = "";
+  $first_name = $last_name = $email = $oldPassword = $newPassword = "";
+
+  $query = "SELECT * FROM business_owner where id = ?";
+  $stmt  = mysqli_stmt_init($conn);
+
+  if (!mysqli_stmt_prepare($stmt, $query)) {
+    die("Fatal error with the query");
+  } else {
+    //actually running the query
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    //execute the 
+    mysqli_stmt_execute($stmt);
+
+    //get result
+    $result = mysqli_stmt_get_result($stmt);
+
+    $row = mysqli_fetch_assoc($result);
+  }
 
   //Post variable here and fill in the post variable name
   $first_name = htmlspecialchars($_POST['first_name']);
   $last_name = htmlspecialchars($_POST['last_name']);
   $email = htmlspecialchars($_POST['email']);
-  $password = htmlspecialchars($_POST['password']);
+  $oldPassword = htmlspecialchars($_POST['oldPassword']);
+  $newPassword = htmlspecialchars($_POST['newPassword']);
 
-
-  //If any variable are empty send an error message. 
-  if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
-    //Error message
-    die("Please enter all the value");
+  echo $first_name . " " . $last_name . " " . $email . " " . $oldPassword . " " . $newPassword;
+  
+  //if any of the variable are empty set it to old one
+  if ($first_name === "undefined" || empty($first_name)) {
+    $first_name = $row['first_name'];
   }
 
-  //check if the email is taken
-  
-  //Update the owner info
-  $query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ?, hash_password = ?
+  //check if the last is empty
+  if ($last_name === "undefined" || empty($last_name)) {
+    $last_name = $row['last_name'];
+  }
+
+  //check if the email is empty
+  if ($email === "undefined" || empty($email)) {
+    $email = $row['email'];
+  }
+
+  //check if the old password is set
+  if ($oldPassword !== "undefined" && !empty($oldPassword)) {
+
+    //this flag will check if the password
+    //is empty so if has different update
+    if ($newPassword !== "undefined" && !empty($newPassword)) {
+      //now check if the old password verify
+      if (password_verify($oldPassword, $row['hash_password'])) {
+        $flag = true;
+      } else {
+        //if password did not match
+        $flag = false;
+        echo "Password did not match";
+        die(http_response_code(401));
+      }
+    } else {
+      //if the new password is not set
+      $flag = false;
+      echo "New password was not enter";
+      die(http_response_code(401));
+    }
+  } else {
+    //if the old password is not enter 
+    $flag = false;
+  }
+
+  //if the use want to change the password 
+  //and the password match
+  if ($flag === true) {
+    //update the password
+    $query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ?, hash_password = ?
    where id = ?";
+  } else {
+    //if they do not want to change the password
+    $query = "UPDATE business_owner SET first_name = ?, last_name = ?, email = ? where id = ?";
+  }
+
   $stmt = mysqli_stmt_init($conn);
 
   //if the query failed
@@ -44,20 +105,27 @@ if (isset($_SESSION['owner_id'])) {
     die("Fatal error the owner query failed");
   } else {
 
-    //side note: Have to come back here to check if the user enter the right password
-    //hash the new password 
-    $hash_password = password_hash($password, PASSWORD_DEFAULT);
+    //if the password is confirm
+    if ($flag === true) {
+      //hash the new password 
+      $hash_password = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    //bind the variable to prepare the statement
-    mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $hash_password, $id);
+      //bind the variable to prepare the statement
+      mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $hash_password, $id);
+    }else {
+      //bind the variable to prepare the statement
+      mysqli_stmt_bind_param($stmt, "sssi", $first_name, $last_name, $email, $id);
+    }
+
 
     //Check if the statement got executed
-    if (mysqli_stmt_execute($stmt)){
+    if (mysqli_stmt_execute($stmt)) {
       //send successful message
       echo "Successful";
-    }else{
+    } else {
       //this might be if the email is taken
       echo "Email is taken";
+      die(http_response_code(401));
     }
 
     //free the memory

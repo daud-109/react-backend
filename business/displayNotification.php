@@ -19,7 +19,7 @@ if (isset($_SESSION['owner_id'])) {
     $business_id = $_SESSION['business_id'];
 
     //check if the business got notification
-    $query = "SELECT business_id, notification_date FROM notification WHERE business_id = ? ";
+    $query = "SELECT business_id, positive_date FROM notification WHERE business_id = ? ";
     $stmt = mysqli_stmt_init($conn);
 
     //if the business query is not setup properly
@@ -44,7 +44,7 @@ if (isset($_SESSION['owner_id'])) {
 
         //this loop will get the date and store it in array
         while ($row = mysqli_fetch_assoc($result)) {
-          $display_notification_date[$i]  = ["notification_date" => $row['notification_date']];
+          $display_notification_date = ["positive_date" => $row['positive_date'], ];
           $i++;
         }
         

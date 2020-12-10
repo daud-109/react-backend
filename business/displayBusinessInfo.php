@@ -46,7 +46,7 @@ if (isset($_SESSION['owner_id'])) {
         $row = mysqli_fetch_assoc($result);
 
         //store business info as array
-        $display_info = array("name" => $row['name'], "type" => $row['type'], "email" => $row['email'], "phone" => $row['phone'], "description" => $row['description'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']);
+        $display_info = array("name" => $row['name'], "type" => $row['type'], "email" => $row['email'], "phone" => $row['phone'], "description" => $row['description'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county'], "alert" => $row['alert']);
 
         //free the memory
         mysqli_stmt_free_result($business_stmt);

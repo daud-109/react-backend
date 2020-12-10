@@ -12,7 +12,7 @@
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //Assign everything empty string
-  $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $description = $street = $town = $zip  = $county = "";
+  $first_name = $last_name = $owner_email = $password = $business_name = $business_type = $business_email = $business_phone = $description = $street = $town = $zip  = $county = $alert = "";
 
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
@@ -34,9 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $town = htmlspecialchars($_POST['town']);
   $zip  = htmlspecialchars($_POST['zip']);
   $county = htmlspecialchars($_POST['county']);
+  $alert = htmlspecialchars($_POST['alert']);
 
   //If any variable are empty send an error message. 
-  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
+  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county) || empty($alert)) {
 
     //send error message
     die("Please enter all the value");
@@ -92,8 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           //get the id from this last executed inset query 
           $owner_id = mysqli_insert_id($conn);
 
+          //change the alert to number
+          if($alert === "false"){
+            //send message automatically
+            $alert = 0;
+          }else if ($alert === "true"){
+            //send message manually
+            $alert = 1;
+          }
           //Insert value into the business table
-          $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county) VALUES(?,?,?,?,?,?,?,?,?,?)";
+          $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county, alert) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
           $stmt = mysqli_stmt_init($conn);
 
           //check if there is error in the previous query
@@ -104,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           } else {
 
             //Provide the the statement to bind, provide the type of variable and the variable itself.
-            mysqli_stmt_bind_param($stmt, "isssssssss", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county);
+            mysqli_stmt_bind_param($stmt, "isssssssssi", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county, $alert);
 
             //Now check if this query executed
             if (mysqli_stmt_execute($stmt)) {
