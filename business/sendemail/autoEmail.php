@@ -33,14 +33,55 @@ if (isset($_SESSION['patron_id'])) {
             ON spreadsheet.patron_id = patron.id)
             WHERE notification.patron_id = ?
             AND business.alert = 0
+            AND business.id = ?
             AND notification.positive_Date = ?
             AND spreadsheet.sheet_date BETWEEN ? AND ?";
   $stmt = mysqli_stmt_init($conn);
 
+  //if the query failed
   if (!mysqli_stmt_prepare($stmt, $query)) {
     die("Fatal error with the four table select query");
-  }else {
-    
+  } else {
+    //bind the pass value
+    mysqli_stmt_bind_param($stmt, "iisss", $patron_id, $row['business_id'], $date_of_positive, $today_date, $seven_days_ago);
+
+    //check if the statement executed
+    if (mysqli_stmt_execute($stmt)) {
+
+      //get the result
+      $result = mysqli_stmt_get_result($stmt);
+
+      //declare increment variable
+      $i = 0;
+
+      //use the while loop to get the contact
+      while ($auto_row = mysqli_fetch_assoc($result)) {
+
+        //email setting
+        $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
+        $mail->addAddress($auto_row['email']);
+        $mail -> addBCC($auto_row['email']);
+      }
+
+      //subject
+      $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
+
+      //message
+      $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
+
+      //send the mail
+      if ($mail->send()) {
+        //if email is send
+        echo "Email was send";
+
+        //if the email is not send
+      } else {
+        echo "Email was not send";
+      }
+
+    } else {
+      echo "Statement did not execute";
+    }
   }
 } else {
   //send error message

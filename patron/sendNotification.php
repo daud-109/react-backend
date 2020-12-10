@@ -62,7 +62,7 @@ if (isset($_SESSION['patron_id'])) {
         die("Fatal error the select notification query failed");
       } else {
 
-
+        //This will loop will get all the data need to store in the notification table
         while ($row = mysqli_fetch_assoc($result)) {
 
           //bind the variable
@@ -84,18 +84,13 @@ if (isset($_SESSION['patron_id'])) {
             if (!mysqli_stmt_execute($insert_stmt)) {
               echo "It did not executed the insert. ";
             } else {
+              echo "Insert successfully";
               //include this file to send auto email
-              require_once "../business/sendemail/autoEmail.php";
+              require "../business/sendemail/autoEmail.php";
             }
           } else {
             echo "Same\n";
           }
-        }
-        
-        //now here when the all of the data is store inside the notification table
-        //then you can 
-        if($check_row < 1){
-          
         }
       }
     }

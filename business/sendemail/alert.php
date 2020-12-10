@@ -72,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               //email setting
               $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
               $mail->addAddress($row['email']);
+              $mail -> addBCC($row['email']);
             }
 
             //subject
