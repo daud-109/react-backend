@@ -7,7 +7,7 @@
 */
 header("Access-Control-Allow-Origin: *"); //see if you can remove the * star sign and add json application/json
 $json = file_get_contents("php://input"); //you can remove this line and see what happen
-$data = json_decode($json, true); //rue make as an associated array 
+$_POST = json_decode($json, true); //rue make as an associated array 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -31,11 +31,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = "";
 
     //Post variables 
-    $id = htmlspecialchars($data['id']);
+    $id = htmlspecialchars($_POST['id']);
 
+    echo $id;
     //check if the post is empty
     if (empty($id)) {
-      die("Fatal error, value was enter");
+      die("Fatal error, id was not enter");
     } else {
 
       //check if the id exits
