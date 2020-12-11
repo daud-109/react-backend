@@ -7,7 +7,7 @@
 */
 header("Access-Control-Allow-Origin: *"); //see if you can remove the * star sign and add json application/json
 $json = file_get_contents("php://input"); //you can remove this line and see what happen
-$_POST = json_decode($json, true); //rue make as an associated array 
+$data = json_decode($json, true); //rue make as an associated array 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -31,9 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = "";
 
     //Post variables 
-    $id = htmlspecialchars($_POST['id']);
+    $id = htmlspecialchars($data['id']);
 
-    echo $id;
     //check if the post is empty
     if (empty($id)) {
       die("Fatal error, id was not enter");
@@ -58,10 +57,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         //now check if the id match is affected
         if ($row = mysqli_fetch_assoc($result)) {
-
-          //now check if the id match
-          if ($id === $row['id']) {
-
+          
+          if ($id == $row['id']) {
+            echo "Ur inside of this";
             //store the session 
             $_SESSION['business_id'] = $row['id'];
 

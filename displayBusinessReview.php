@@ -42,7 +42,7 @@ if (empty($id)) {
   } else {
 
     //bind the variable to prepare the statement
-    mysqli_stmt_bind_param($stmt, "id", $id);
+    mysqli_stmt_bind_param($stmt, "i", $id);
 
     //check if the statement executed and
     //store the data
