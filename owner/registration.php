@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $business_type = htmlspecialchars($_POST['businessType']);
   $business_email = htmlspecialchars($_POST['businessEmail']); //check
   $business_phone = htmlspecialchars($_POST['phone']);
-  $description = htmlspecialchars($_POST['url']); //make sure to change to description
+  $description = htmlspecialchars($_POST['description']); //make sure to change to description
   $street = htmlspecialchars($_POST['street']); //check
   $town = htmlspecialchars($_POST['town']);
   $zip  = htmlspecialchars($_POST['zip']);

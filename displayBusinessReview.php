@@ -16,10 +16,9 @@ header('Content-Type: application/json');
 require_once './mysqlConn.php';
 
 //declare variable
-$id = "";
+session_start();
 
-//json data
-$id = htmlspecialchars($_POST['id']);
+$id = $_SESSION['business_id'];
 
 
 //If any variable is empty send an error message. 
