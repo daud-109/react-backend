@@ -86,7 +86,8 @@ if (isset($_SESSION['patron_id'])) {
             } else {
               echo "Insert successfully";
               //include this file to send auto email
-              require "../business/sendemail/autoEmail.php";
+              //require_once "../business/sendemail/email.php";
+              //require "../business/sendemail/autoEmail.php";
             }
           } else {
             echo "Same\n";

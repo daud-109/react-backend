@@ -7,7 +7,7 @@
 if (isset($_SESSION['patron_id'])) {
 
   //include this file to help us send email
-  require_once "./email.php";
+  //require_once "./email.php";
 
   //today date
   $today_date = date("Y-m-d");

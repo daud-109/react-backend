@@ -14,8 +14,8 @@ $data = json_decode($json, true); //rue make as an associated array
 session_start();
 
 //include the file to connect with mysql 
-require_once '../mysqlConn.php';
-require_once '../function.php';
+require_once './mysqlConn.php';
+require_once './function.php';
 
 //Unset the business session to 
 //start new session
