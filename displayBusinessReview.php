@@ -7,7 +7,7 @@
 //this will helps us read the json file
 header("Access-Control-Allow-Origin: *");
 $json = file_get_contents("php://input");
-$data = json_decode($json, true);
+$_POST = json_decode($json, true);
 
 //this will help us send json file
 header('Content-Type: application/json');
@@ -19,7 +19,7 @@ require_once './mysqlConn.php';
 $id = "";
 
 //json data
-$id = htmlspecialchars($data['id']);
+$id = htmlspecialchars($_POST['id']);
 
 
 //If any variable is empty send an error message. 
@@ -71,6 +71,10 @@ if (empty($id)) {
       
       //display the json
       echo $json;
+
+      if(empty($json)){
+        echo "No data";
+      }
 
     }else{ 
       echo "Fatal error with execute statement";

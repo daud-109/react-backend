@@ -18,6 +18,12 @@ if (isset($_SESSION['patron_id'])) {
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
 
+  //Unset the business session to 
+  //start new session
+  if (isset($_SESSION['business_id'])) {
+    unset($_SESSION['business_id']);
+  }
+  
   //declare variable
   $id = "";
 
@@ -53,18 +59,21 @@ if (isset($_SESSION['patron_id'])) {
       //check if it executed
       if (mysqli_stmt_execute($stmt)) {
 
-        //get result
-        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_store_result($stmt); //This is fetching data from the database
+
+        //Number of result or rows.
+        $row = mysqli_stmt_num_rows($stmt);
 
         //if the row is affected allow the patron to insert
-        if ($row = mysqli_fetch_assoc($result)) {
-
-          //insert file
-          require_once 'insertReviewFile.php';
+        if ($row > 0) {
+          //Start session
+          session_start();
+          $_SESSION['business_id'] = $id; //business
 
         } else {
+          echo "Something went wrong";
           //display error if user is not allow to submit review
-          echo "You are not allow to write a review";
+          die(http_response_code(404));
         }
       }
     }
@@ -80,6 +89,7 @@ if (isset($_SESSION['patron_id'])) {
   mysqli_close($conn);
   
 } else {
+  echo "Log-in";
   //send error message
-  die("Please Log-in");
+  die(http_response_code(404));
 }

@@ -43,7 +43,7 @@ if (isset($_SESSION['patron_id'])) {
     die("Fatal error with the four table select query");
   } else {
     //bind the pass value
-    mysqli_stmt_bind_param($stmt, "iisss", $patron_id, $row['business_id'], $date_of_positive, $today_date, $seven_days_ago);
+    mysqli_stmt_bind_param($stmt, "iisss", $patron_id, $row['business_id'], $date_of_positive, $seven_days_ago, $today_date);
 
     //check if the statement executed
     if (mysqli_stmt_execute($stmt)) {

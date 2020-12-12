@@ -5,6 +5,8 @@
 */
 
 if (isset($_SESSION['patron_id'])) {
+
+
   //declare the variable
   $mask_rating = $social_distance_rating =  $sanitize_rating = $comment = "";
 
@@ -18,6 +20,11 @@ if (isset($_SESSION['patron_id'])) {
     //display error if the value are empty
     die("Make sure all the values are enter");
   } else {
+
+    //get the patron and business id
+    $patron_id = $_SESSION['patron_id'];
+    $business_id = $_SESSION['business_id'];
+
     //insert statement
     $query = "INSERT INTO review (business_id, patron_id, mask_rating, social_distance_rating, sanitize_rating, comment) VALUES (?,?,?,?,?,?)";
     $stmt = mysqli_stmt_init($conn);
@@ -27,17 +34,33 @@ if (isset($_SESSION['patron_id'])) {
       die("Fatal error for insert review query");
     } else {
       //prepare the statement to bind the variable
-      mysqli_stmt_bind_param($stmt, "iiiiis", $row['id'], $patron_id, $mask_rating, $social_distance_rating, $sanitize_rating, $comment);
+      mysqli_stmt_bind_param($stmt, "iiiiis", $business_id, $patron_id, $mask_rating, $social_distance_rating, $sanitize_rating, $comment);
+
+      //Unset the business session to 
+      //start new session
+      if (isset($_SESSION['business_id'])) {
+        unset($_SESSION['business_id']);
+      }
 
       //now check if the insert executed
       if (mysqli_stmt_execute($stmt)) {
         echo "Review is inserted";
+        die(http_response_code(404));
       } else {
-        echo "something went wrong with the executed statement";
       }
     }
   }
-}else {
+
+  //free the memory
+  mysqli_stmt_free_result($stmt);
+
+  //close the statement
+  mysqli_stmt_close($stmt);
+
+  //close the connection 
+  mysqli_close($conn);
+  
+} else {
   echo "Please login";
-  die();
+  die(http_response_code(404));
 }
