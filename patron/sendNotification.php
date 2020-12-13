@@ -62,6 +62,7 @@ if (isset($_SESSION['patron_id'])) {
         die("Fatal error the select notification query failed");
       } else {
 
+        $i = 0;
         //This will loop will get all the data need to store in the notification table
         while ($row = mysqli_fetch_assoc($result)) {
 
@@ -85,13 +86,24 @@ if (isset($_SESSION['patron_id'])) {
               echo "It did not executed the insert. ";
             } else {
               echo "Insert successfully";
+              $flag = true;
+              $business_id[$i] = $row['business_id'];
               //include this file to send auto email
               //require_once "../business/sendemail/email.php";
-              //require "../business/sendemail/autoEmail.php";
+              //require_once "../business/sendemail/autoEmail.php";
+              $i++;
             }
           } else {
+            $flag = false;
             echo "Same\n";
           }
+        }
+        if ($flag === true) {
+          require_once "../business/sendemail/email.php";
+          require_once "../business/sendemail/autoEmail.php";
+          print_r($business_id);
+        } else {
+          echo "this the same information";
         }
       }
     }

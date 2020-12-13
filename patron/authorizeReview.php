@@ -9,9 +9,9 @@ $data = json_decode($json, true);
 
 //this will help us send json file
 header('Content-Type: application/json');
+
 //start the session
 session_start();
-
 //Check if the patron is logged in
 if (isset($_SESSION['patron_id'])) {
 
@@ -66,9 +66,9 @@ if (isset($_SESSION['patron_id'])) {
 
         //if the row is affected allow the patron to insert
         if ($row > 0) {
+          echo "good";
           //Start session
-          session_start();
-          $_SESSION['business_id'] = $id; //business
+          //$_SESSION['business_id'] = $id; //business
 
         } else {
           echo "Something went wrong";

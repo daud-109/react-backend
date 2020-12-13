@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $zip  = htmlspecialchars($_POST['zip']);
   $county = htmlspecialchars($_POST['county']);
   $alert = htmlspecialchars($_POST['alert']);
-
+  
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county) || empty($alert)) {
 

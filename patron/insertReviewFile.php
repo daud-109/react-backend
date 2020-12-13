@@ -3,6 +3,7 @@
 **and rate the business only if they have been to that
 **business.
 */
+session_start();
 
 if (isset($_SESSION['patron_id'])) {
 

@@ -20,7 +20,7 @@ if (isset($_SESSION['patron_id'])) {
 
   //formate the date
   $seven_days_ago = date_format($seven_days_ago, "Y-m-d");
-
+  
   //inner join query combine four tables
   //to send notification.
   $query = "SELECT DISTINCT patron.email, business.name 
@@ -42,6 +42,7 @@ if (isset($_SESSION['patron_id'])) {
   if (!mysqli_stmt_prepare($stmt, $query)) {
     die("Fatal error with the four table select query");
   } else {
+    
     //bind the pass value
     mysqli_stmt_bind_param($stmt, "iisss", $patron_id, $row['business_id'], $date_of_positive, $seven_days_ago, $today_date);
 
@@ -73,12 +74,11 @@ if (isset($_SESSION['patron_id'])) {
       if ($mail->send()) {
         //if email is send
         echo "Email was send";
-
         //if the email is not send
       } else {
         echo "Email was not send";
       }
-
+      
     } else {
       echo "Statement did not execute";
     }
