@@ -28,11 +28,16 @@ if (empty($id)) {
 } else {
 
   //query to search for business info and review
-  $query = "SELECT business.name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment 
-  FROM (business
-  INNER JOIN review
-  ON business.id = review.business_id)
-  WHERE business.id = ?";
+  // $query = "SELECT business.name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment 
+  // FROM (business
+  // INNER JOIN review
+  // ON business.id = review.business_id)
+  // WHERE business.id = ?";
+  $query = "SELECT *  
+    FROM (business
+    INNER JOIN review
+    ON business.id = review.business_id)
+    WHERE business.id = ?";
   $stmt = mysqli_stmt_init($conn);
 
   //Check if the query failed
@@ -45,7 +50,7 @@ if (empty($id)) {
 
     //check if the statement executed and
     //store the data
-    if(mysqli_stmt_execute($stmt)){
+    if (mysqli_stmt_execute($stmt)) {
 
       //prepare the result
       $result = mysqli_stmt_get_result($stmt);
@@ -60,25 +65,24 @@ if (empty($id)) {
       while ($row = mysqli_fetch_assoc($result)) {
 
         //this array will hold business name and review about the business
-        $business_review_array[$i] = ["name" => $row['name'], "mask_rating" => $row['mask_rating'], "social_distance_rating" => $row['social_distance_rating'], "sanitize_rating" => $row["sanitize_rating"],"comment" => $row['comment']];
+        $business_review_array[$i] = ["name" => $row['name'], "type" => $row['type'],"street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county'], "mask_rating" => $row['mask_rating'], "social_distance_rating" => $row['social_distance_rating'], "sanitize_rating" => $row["sanitize_rating"], "comment" => $row['comment']];
+        
         //increment
         $i++;
       }
-      
+
       //encode the array into json formate
       $json = json_encode($business_review_array, JSON_PRETTY_PRINT);
-      
+
       //display the json
       echo $json;
 
-      if(empty($json)){
+      if (empty($json)) {
         echo "No data";
       }
-
-    }else{ 
+    } else {
       echo "Fatal error with execute statement";
     }
-    
   }
 
   //free the memory
