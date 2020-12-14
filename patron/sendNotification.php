@@ -101,14 +101,14 @@ if (isset($_SESSION['patron_id'])) {
         if ($flag === true) {
           require_once "../business/sendemail/email.php";
           require_once "../business/sendemail/autoEmail.php";
-          print_r($business_id);
+          //print_r($business_id);
         } else {
           echo "this the same information";
         }
       }
     }
   }
-
+  
   //free the memory
   mysqli_stmt_free_result($check_stmt);
 

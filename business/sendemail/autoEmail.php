@@ -20,7 +20,7 @@ if (isset($_SESSION['patron_id'])) {
 
   //formate the date
   $seven_days_ago = date_format($seven_days_ago, "Y-m-d");
-  
+
   //inner join query combine four tables
   //to send notification.
   $query = "SELECT DISTINCT patron.email, business.name 
@@ -33,18 +33,18 @@ if (isset($_SESSION['patron_id'])) {
             ON spreadsheet.patron_id = patron.id)
             WHERE notification.patron_id = ?
             AND business.alert = 0
-            AND business.id = ?
             AND notification.positive_Date = ?
-            AND spreadsheet.sheet_date BETWEEN ? AND ?";
+            AND spreadsheet.sheet_date BETWEEN ? AND ?
+            ORDER BY patron.email";
   $stmt = mysqli_stmt_init($conn);
 
   //if the query failed
   if (!mysqli_stmt_prepare($stmt, $query)) {
     die("Fatal error with the four table select query");
   } else {
-    
+
     //bind the pass value
-    mysqli_stmt_bind_param($stmt, "iisss", $patron_id, $row['business_id'], $date_of_positive, $seven_days_ago, $today_date);
+    mysqli_stmt_bind_param($stmt, "isss", $patron_id, $date_of_positive, $seven_days_ago, $today_date);
 
     //check if the statement executed
     if (mysqli_stmt_execute($stmt)) {
@@ -61,24 +61,22 @@ if (isset($_SESSION['patron_id'])) {
         //email setting
         $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
         $mail->addAddress($auto_row['email']);
-        $mail -> addBCC($auto_row['email']);
+        $mail->addBCC($auto_row['email']);
+        //subject
+        $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
+
+        //message
+        $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
+
+        //send the mail
+        if ($mail->send()) {
+          //if email is send
+          echo "Email was send";
+          //if the email is not send
+        } else {
+          echo "Email was not send";
+        }
       }
-
-      //subject
-      $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
-
-      //message
-      $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
-
-      //send the mail
-      if ($mail->send()) {
-        //if email is send
-        echo "Email was send";
-        //if the email is not send
-      } else {
-        echo "Email was not send";
-      }
-      
     } else {
       echo "Statement did not execute";
     }

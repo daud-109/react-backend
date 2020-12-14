@@ -7,6 +7,7 @@ session_start();
 
 if (isset($_SESSION['patron_id'])) {
 
+  require_once "../mysqlConn.php";
 
   //declare the variable
   $mask_rating = $social_distance_rating =  $sanitize_rating = $comment = "";
@@ -46,7 +47,6 @@ if (isset($_SESSION['patron_id'])) {
       //now check if the insert executed
       if (mysqli_stmt_execute($stmt)) {
         echo "Review is inserted";
-        die(http_response_code(404));
       } else {
       }
     }
@@ -63,5 +63,5 @@ if (isset($_SESSION['patron_id'])) {
   
 } else {
   echo "Please login";
-  die(http_response_code(404));
+  die(http_response_code(401));
 }

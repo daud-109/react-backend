@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $zip  = htmlspecialchars($_POST['zip']);
   $county = htmlspecialchars($_POST['county']);
   $alert = htmlspecialchars($_POST['alert']);
-  
+
   //If any variable are empty send an error message. 
-  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county) || empty($alert)) {
+  if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
 
     //send error message
     die("Please enter all the value");
@@ -94,13 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           $owner_id = mysqli_insert_id($conn);
 
           //change the alert to number
-          if($alert === "false"){
+          if ($alert == true || $alert == 'undefined' || empty($alert)) {
             //send message automatically
-            $alert = 0;
-          }else if ($alert === "true"){
-            //send message manually
             $alert = 1;
+          } else  if ($alert ==  false) {
+            //send message manually
+            $alert = 0;
           }
+
           //Insert value into the business table
           $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county, alert) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
           $stmt = mysqli_stmt_init($conn);
