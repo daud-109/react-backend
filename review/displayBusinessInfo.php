@@ -12,7 +12,7 @@ session_start();
 if (isset($_SESSION['business_id'])) {
 
   //include the file to connect with mysql 
-  require_once './mysqlConn.php';
+  require_once '../mysqlConn.php';
 
   //set the business id
   $business_id = $_SESSION['business_id'];

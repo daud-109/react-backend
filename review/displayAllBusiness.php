@@ -6,7 +6,7 @@
 header('Content-Type: application/json');
 
 //include the file to connect with mysql 
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //Select all of the business
 $query = "SELECT id, name, type, street, town, zip, county FROM business";

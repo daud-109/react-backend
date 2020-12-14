@@ -13,7 +13,7 @@ $_POST = json_decode($json, true);
 header('Content-Type: application/json');
 
 //file to connect to the database
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //declare variable
 session_start();

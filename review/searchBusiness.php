@@ -6,7 +6,7 @@
 header('Content-Type: application/json');
 
 //include the file to connect with mysql 
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //declare variable here
 $search_by = $search_for = '';
