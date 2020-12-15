@@ -14,7 +14,7 @@ $data = json_decode($json, true); //rue make as an associated array
 
 
 //include the file to connect with mysql 
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //Unset the business session to 
 //start new session
@@ -56,7 +56,7 @@ if (empty($id)) {
       if ($id == $row['id']) {
         session_start();
         //store the session 
-        $_SESSION['business_id'] = $row['id'];
+        $_SESSION['review_business_id'] = $row['id'];
         echo $_SESSION['business_id'];
       } else {
 

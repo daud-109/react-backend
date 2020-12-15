@@ -3,10 +3,12 @@
 **user can select a business to check
 **for the review of the business
 */
+die();
 header('Content-Type: application/json');
 
+
 //include the file to connect with mysql 
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //declare variable here
 $search_by = $search_for = '';
@@ -22,7 +24,7 @@ if(empty($search_by) || empty($search_for)){
 }
 
 //Select all of the business
-$query = "SELECT name, type, street, town, zip, county 
+$query = "SELECT id, name, type, street, town, zip, county 
           FROM business 
           WHERE $search_by LIKE ?";
 $stmt = mysqli_stmt_init($conn);

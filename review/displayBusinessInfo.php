@@ -9,13 +9,13 @@ header('Content-Type: application/json');
 session_start();
 
 //check if the user selected a business
-if (isset($_SESSION['business_id'])) {
+if (isset($_SESSION['review_business_id'])) {
 
   //include the file to connect with mysql 
-  require_once './mysqlConn.php';
+  require_once '../mysqlConn.php';
 
   //set the business id
-  $business_id = $_SESSION['business_id'];
+  $business_id = $_SESSION['review_business_id'];
 
   //Use the select to get the business id.
   $business_query = "SELECT * FROM business where id = ?";

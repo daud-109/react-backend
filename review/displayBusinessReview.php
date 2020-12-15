@@ -13,7 +13,7 @@
 header('Content-Type: application/json');
 
 //file to connect to the database
-require_once './mysqlConn.php';
+require_once '../mysqlConn.php';
 
 //declare variable
 session_start();
@@ -21,7 +21,7 @@ session_start();
 //declare a variable
 $id = "";
 
-$id = $_SESSION['business_id'];
+$id = $_SESSION['review_business_id'];
 
 
 //If any variable is empty send an error message. 
