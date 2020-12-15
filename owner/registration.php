@@ -36,6 +36,30 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $county = htmlspecialchars($_POST['county']);
   $alert = htmlspecialchars($_POST['alert']);
 
+  var_dump($alert);
+  //change the alert to number
+  // if ($alert === "true") { 
+  //   //send message automatically
+  //   echo "Ur in here";
+  //   $alert = 1;
+  // } elseif ($alert ===  "false") {
+  //   //send message manually
+  //   echo "in zero";
+  //   $alert = 0;
+  // } else {
+  //   echo "ur in else";
+  //   $alert = 1;
+  // }
+
+  if ($alert ===  "false") {
+    //send message manually
+    echo "in zero";
+    $alert = 0;
+  } else {
+    echo "ur in else";
+    $alert = 1;
+  }
+
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
 
@@ -93,15 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           //get the id from this last executed inset query 
           $owner_id = mysqli_insert_id($conn);
 
-          //change the alert to number
-          if ($alert == true || $alert == 'undefined' || empty($alert)) {
-            //send message automatically
-            $alert = 1;
-          } else  if ($alert ==  false) {
-            //send message manually
-            $alert = 0;
-          }
-
           //Insert value into the business table
           $query = "INSERT INTO business(owner_id, name, type, email, phone, description, street, town, zip, county, alert) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
           $stmt = mysqli_stmt_init($conn);
@@ -149,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       }
     }
   }
-
   //close the connection 
   mysqli_close($conn);
 } else {

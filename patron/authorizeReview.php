@@ -68,7 +68,7 @@ if (isset($_SESSION['patron_id'])) {
         if ($row > 0) {
           echo "good";
           //Start session
-          //$_SESSION['business_id'] = $id; //business
+          $_SESSION['business_id'] = $id; //business
 
         } else {
           echo "Something went wrong";

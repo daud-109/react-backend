@@ -37,13 +37,7 @@ if (isset($_SESSION['patron_id'])) {
     } else {
       //prepare the statement to bind the variable
       mysqli_stmt_bind_param($stmt, "iiiiis", $business_id, $patron_id, $mask_rating, $social_distance_rating, $sanitize_rating, $comment);
-
-      //Unset the business session to 
-      //start new session
-      if (isset($_SESSION['business_id'])) {
-        unset($_SESSION['business_id']);
-      }
-
+      
       //now check if the insert executed
       if (mysqli_stmt_execute($stmt)) {
         echo "Review is inserted";

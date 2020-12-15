@@ -55,27 +55,29 @@ if (isset($_SESSION['patron_id'])) {
       //declare increment variable
       $i = 0;
 
+      $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
+
       //use the while loop to get the contact
       while ($auto_row = mysqli_fetch_assoc($result)) {
 
         //email setting
-        $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
         $mail->addAddress($auto_row['email']);
         $mail->addBCC($auto_row['email']);
-        //subject
-        $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
+        print_r($auto_row);
+        
+      }
+      //subject
+      $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
+      //message
+      $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
 
-        //message
-        $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
-
-        //send the mail
-        if ($mail->send()) {
-          //if email is send
-          echo "Email was send";
-          //if the email is not send
-        } else {
-          echo "Email was not send";
-        }
+      //send the mail
+      if ($mail->send()) {
+        //if email is send
+        echo "Email was send";
+        //if the email is not send
+      } else {
+        echo "Email was not send";
       }
     } else {
       echo "Statement did not execute";
