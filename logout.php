@@ -8,12 +8,13 @@
 require_once 'function.php';
 
 session_start();
+session_unset();
+session_destroy();
 
-if (isset($_SESSION['owner_id'])){
-  session_unset();
-  session_destroy();
-}
-else{
-  die("Fatal error");
-}
-?>
+// if (isset($_SESSION['owner_id'])){
+//   session_unset();
+//   session_destroy();
+// }
+// else{
+//   die("Fatal error");
+// }
