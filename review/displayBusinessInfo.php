@@ -12,7 +12,7 @@ session_start();
 if (isset($_SESSION['business_id'])) {
 
   //include the file to connect with mysql 
-  require_once '../mysqlConn.php';
+  require_once './mysqlConn.php';
 
   //set the business id
   $business_id = $_SESSION['business_id'];
@@ -43,7 +43,7 @@ if (isset($_SESSION['business_id'])) {
       $row = mysqli_fetch_assoc($result);
 
       //store business info as array
-      $display_info = array("name" => $row['name'], "type" => $row['type'], $row['type'], "phone" => $row['phone'], "email" => $row['email'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']);
+      $display_info = array("id" => $row['id'], "name" => $row['name'], "type" => $row['type'], "phone" => $row['phone'], "email" => $row['email'], "street" => $row['street'], "town" => $row['town'], "zip" => $row['zip'], "county" => $row['county']);
 
       //free the memory
       mysqli_stmt_free_result($business_stmt);

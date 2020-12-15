@@ -23,7 +23,7 @@ if (isset($_SESSION['patron_id'])) {
 
   //inner join query combine four tables
   //to send notification.
-  $query = "SELECT DISTINCT patron.email, business.name 
+  $query = "SELECT DISTINCT patron.email 
             FROM (((business
             INNER JOIN notification
             ON business.id = notification.business_id)
@@ -55,7 +55,11 @@ if (isset($_SESSION['patron_id'])) {
       //declare increment variable
       $i = 0;
 
+      //send from
       $mail->setFrom('phpseniorproject@gmail.com', 'COVID-19 Tracker');
+
+      //subject
+      $mail->Subject = 'COVID-19 Alert at';
 
       //use the while loop to get the contact
       while ($auto_row = mysqli_fetch_assoc($result)) {
@@ -63,14 +67,10 @@ if (isset($_SESSION['patron_id'])) {
         //email setting
         $mail->addAddress($auto_row['email']);
         $mail->addBCC($auto_row['email']);
-        print_r($auto_row);
+        //message
         
       }
-      //subject
-      $mail->Subject = 'COVID-19 Alert at' . " " . $auto_row['name'];
-      //message
-      $mail->Body = "This is an automated alert that was sent because someone that has been to our business recently has reported positive for COVID-19 on the " . $date_of_positive . " .";
-
+      $mail->Body = "This is an automated alert that was sent because someone that has been to the same business location as you recently has reported positive for COVID-19 on the following date  " . $date_of_positive;
       //send the mail
       if ($mail->send()) {
         //if email is send

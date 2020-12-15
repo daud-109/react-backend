@@ -17,18 +17,12 @@ if (isset($_SESSION['patron_id'])) {
 
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
-
-  //Unset the business session to 
-  //start new session
-  if (isset($_SESSION['business_id'])) {
-    unset($_SESSION['business_id']);
-  }
   
   //declare variable
   $id = "";
 
-  //json data
-  $id = htmlspecialchars($data['id']);
+  //session data
+  $id = $_SESSION['business_id'];
 
   //If any variable is empty send an error message. 
   if (empty($id)) {
@@ -68,7 +62,7 @@ if (isset($_SESSION['patron_id'])) {
         if ($row > 0) {
           echo "good";
           //Start session
-          $_SESSION['business_id'] = $id; //business
+          //$_SESSION['business_id'] = $id; //business
 
         } else {
           echo "Something went wrong";
