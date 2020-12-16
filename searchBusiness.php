@@ -11,10 +11,10 @@ require_once './mysqlConn.php';
 //declare variable here
 $search_by = $search_for = '';
 
-
 //Post variable here and fill in the post variable name
 $search_by = htmlspecialchars($_POST['search_by']);
 $search_for = htmlspecialchars($_POST['search_for']);
+
 //Select all of the business
 $query = "SELECT id, name, type, street, town, zip, county 
           FROM business 
@@ -23,8 +23,8 @@ $stmt = mysqli_stmt_init($conn);
 
 //if the business query is not setup properly
 if (!mysqli_stmt_prepare($stmt, $query)) {
-  //display error
-  die("Fatal error the business select query failed");
+  //display error fatal error the business select query failed
+  die(http_response_code(409));
 } else {
 
   $search_for = "%$search_for%";
@@ -32,7 +32,6 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
   //bind the statement
   mysqli_stmt_bind_param($stmt, "s", $search_for);
 
-  //echo $search_by . " " . $search_for;
   //execute the statement
   if (mysqli_stmt_execute($stmt)) {
 
@@ -60,7 +59,7 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
     //display the business info
     echo $json;
   } else {
-    echo "Fatal error with execution";
+    die(http_response_code(409));
   }
 }
 

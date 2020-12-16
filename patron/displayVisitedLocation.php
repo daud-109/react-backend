@@ -60,7 +60,7 @@ if (isset($_SESSION['patron_id'])) {
       }
     } else {
       //display error if the query did not execute
-      echo "The query did not execute";
+      die(http_response_code(409));
     }
 
 
@@ -72,7 +72,7 @@ if (isset($_SESSION['patron_id'])) {
       //now echo it 
       echo $json;
     } else {
-      echo "There is not data inside the json";
+      die(http_response_code(409));
     }
   }
 
@@ -85,5 +85,6 @@ if (isset($_SESSION['patron_id'])) {
   //close the connection
   mysqli_close($conn);
 } else {
-  die("Please Log-in");
+  //not logged in
+  die(http_response_code(409));
 }

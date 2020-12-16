@@ -21,7 +21,8 @@ if (isset($_SESSION['owner_id'])) {
 
   //if the owner query failed
   if (!mysqli_stmt_prepare($stmt, $query)) {
-    die("Fatal error the business select query failed");
+    //Fatal error the business select query failed
+    die(http_response_code(409));
   } else {
     //bind the variable to prepare the statement
     mysqli_stmt_bind_param($stmt, "i", $id);
@@ -42,9 +43,8 @@ if (isset($_SESSION['owner_id'])) {
       $owner_info = array("first_name" => $row['first_name'], "last_name" => $row['last_name'], "email" => $row['email']);
 
     } else {
-
       //for some reason if we do not get the id 
-      die("Fatal error no data");
+      die(http_response_code(409));
 
     }
 
@@ -59,10 +59,16 @@ if (isset($_SESSION['owner_id'])) {
 
     //display the data
     echo $json;
+    
+    //if json is empty
+    if(!$json){
+      die(http_response_code(409));
+    }
   }
 
   //close the connection
   mysqli_close($conn);
 } else {
-  die("Please login");
+  //log in
+  die(http_response_code(409));
 }

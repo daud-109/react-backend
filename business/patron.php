@@ -88,10 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
               //close the statement
               mysqli_stmt_close($spreadsheet_stmt);
-
-              //successful
-              echo "Patron added";
-              var_dump(http_response_code(200));
             }
           } else {
 
@@ -137,10 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
                 //close the statement
                 mysqli_stmt_close($spreadsheet_stmt);
-
-                //successful
-                echo "Add the info";
-                var_dump(http_response_code(200));
               }
             }
           }
@@ -156,11 +148,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       //close the connection
       mysqli_close($conn);
     } else {
-      die("Select a business");
+      //Select a business
+      die(http_response_code(409));
     }
   } else {
     //if they are not logged-in.
-    die("You must be login");
+    die(http_response_code(404));
   }
 } else {
   //send error because user try to get inside the file without clicking on the submit button

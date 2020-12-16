@@ -57,16 +57,14 @@ if (isset($_SESSION['business_id'])) {
       //display the data
       echo $json;
     } else {
-
       //for some reason if we do not get the id 
-      echo "Fatal error no data of the id";
+      die(http_response_code(409));
     }
   }
 
   //close the connection
   mysqli_close($conn);
 } else {
-
   //if the user did not select a business display the error
-  echo "Select a business";
+  die(http_response_code(409));
 }

@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       //check if the date is empty
       if (empty($start_date) || empty($end_date)) {
         //make sure the user enter the value
-        die("Make sure all the value are enter");
+        die(http_response_code(409));
       } else {
 
         //store the session value
@@ -48,7 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         //if the query does not run
         if (!mysqli_stmt_prepare($stmt, $query)) {
-          die("Fatal error the spreadsheet select query did not run");
+          //Fatal error the spreadsheet select query did not run
+          die(http_response_code(409));
         } else {
 
           //bind the pass value
@@ -88,16 +89,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //send the mail
             if ($mail->send()) {
               //if email is send
-              echo "Email was send";
-
+              echo "Email is send";
+              
               //if the email is not send
             } else {
-              echo "Email was not send";
+              //Email was not send
+              die(http_response_code(409));
             }
 
             //if the query did not executed
           } else {
-            echo "Statement was not executed";
+            //Statement was not executed
+            die(http_response_code(409));
           }
         }
       }
@@ -113,12 +116,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //display error if no business was selected
     } else {
-      die("Select a business");
+      //Select a business"
+      die(http_response_code(409));
     }
 
     //display an error if the user is not logged-in 
   } else {
-    die("You must login");
+    //if not logged in
+    die(http_response_code(404));
   }
 } else {
   //send error if the user try to get inside

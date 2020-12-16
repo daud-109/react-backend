@@ -19,13 +19,15 @@ if (isset($_SESSION['owner_id'])) {
     $business_id = $_SESSION['business_id'];
 
     //check if the business got notification
-    $query = "SELECT business_id, positive_date FROM notification WHERE business_id = ? ";
+    $query = "SELECT business_id, positive_date FROM notification WHERE business_id = ? 
+              ORDER BY positive_Date DESC";
     $stmt = mysqli_stmt_init($conn);
 
     //if the business query is not setup properly
     if (!mysqli_stmt_prepare($stmt, $query)) {
       //display error
-      die("Fatal error the notification select query failed");
+      //Fatal error the notification select query failed"
+      die(http_response_code(409));
     } else {
       //bind the variable to prepare the statement
       mysqli_stmt_bind_param($stmt, "i", $business_id);
@@ -39,28 +41,28 @@ if (isset($_SESSION['owner_id'])) {
         //this array will hold date for the notification
         $display_notification_date = array();
 
-        //help with increment
-        $i = 0;
 
         //this loop will get the date and store it in array
-        while ($row = mysqli_fetch_assoc($result)) {
-          $display_notification_date[$i] = ["positive_date" => $row['positive_date']];
-          $i++;
-        }
-        
+        $row = mysqli_fetch_assoc($result);
+
+        //get the most recent alert
+        $display_notification_date[$i] = ["positive_date" => $row['positive_date']];
+
         //encode the array into json formate
         $json = json_encode($display_notification_date, JSON_PRETTY_PRINT);
 
         //if no data get store
         if (!$json) {
-          echo "Something went wrong with the json";
+          //Something went wrong with the json"
+          die(http_response_code(409));
         } else {
           //now echo it 
           echo $json;
         }
       } else {
         //error message
-        echo "Fatal error with the execution statement";
+        //Fatal error with the execution statement"
+        die(http_response_code(409));
       }
     }
 
@@ -74,12 +76,9 @@ if (isset($_SESSION['owner_id'])) {
     mysqli_close($conn);
   } else {
     //if the user did not select a business display the error
-    echo "Select a business";
+    die(http_response_code(409));
   }
 } else {
-  //displayyyy errorr remove this later
-  echo "Log in please";
-
   //if the business owner is not logged in
   die(http_response_code(404));
 }

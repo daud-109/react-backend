@@ -20,7 +20,7 @@ if (isset($_SESSION['patron_id'])) {
 
   if (empty($mask_rating) || empty($social_distance_rating) || empty($sanitize_rating) || empty($comment)) {
     //display error if the value are empty
-    die("Make sure all the values are enter");
+    die(http_response_code(409));
   } else {
 
     //get the patron and business id
@@ -33,16 +33,16 @@ if (isset($_SESSION['patron_id'])) {
 
     //if the review insert query failed
     if (!mysqli_stmt_prepare($stmt, $query)) {
-      die("Fatal error for insert review query");
+      //Fatal error for insert review query
+      die(http_response_code(409));
     } else {
       //prepare the statement to bind the variable
       mysqli_stmt_bind_param($stmt, "iiiiis", $business_id, $patron_id, $mask_rating, $social_distance_rating, $sanitize_rating, $comment);
       
       //now check if the insert executed
-      if (mysqli_stmt_execute($stmt)) {
-        echo "Review is inserted";
-      } else {
-      }
+      if (!mysqli_stmt_execute($stmt)) {
+        die(http_response_code(409));
+      } 
     }
   }
 
@@ -56,6 +56,6 @@ if (isset($_SESSION['patron_id'])) {
   mysqli_close($conn);
   
 } else {
-  echo "Please login";
-  die(http_response_code(401));
+  //if they are not logged in
+  die(http_response_code(404));
 }

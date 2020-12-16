@@ -53,27 +53,27 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             //set session variable
             $_SESSION['patron_id'] = $row['id']; //set the session value
 
-            //send successful message
-            var_dump(http_response_code(200));
           } else {
             //echo json_encode(["sent" => false, "message" => "Email or Password is not correct"]);
             die(http_response_code(401));
           }
         } else {
+
           //if nothing is fetch from the data base that mean there is no email in the database. 
-          echo "Email or Password is not correct";
           die(http_response_code(401));
+
         }
       } else {
-        echo "Fatal error with execute statement";
+        //Fatal error with execute statement
+        die(http_response_code(409));
       }
     } else {
       //if the query does not run display this message
-      die("Fatal Error");
+      die(http_response_code(409));
     }
   } else { //this else is the 
-    //This is the second if statement
-    die("Make sure to enter the email and password");
+    //This is the second if statement make sure to enter the email and password
+    die(http_response_code(409));
   }
 
   //free the result memory

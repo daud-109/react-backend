@@ -40,7 +40,8 @@ if (isset($_SESSION['patron_id'])) {
 
   //if the query failed
   if (!mysqli_stmt_prepare($stmt, $query)) {
-    die("Fatal error with the four table select query");
+    //Fatal error with the four table select query"
+    die(http_response_code(409));
   } else {
 
     //bind the pass value
@@ -75,6 +76,7 @@ if (isset($_SESSION['patron_id'])) {
       if ($mail->send()) {
         //if email is send
         echo "Email was send";
+        die(http_response_code(200));
         //if the email is not send
       } else {
         echo "Email was not send";

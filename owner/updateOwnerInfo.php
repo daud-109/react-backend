@@ -23,7 +23,8 @@ if (isset($_SESSION['owner_id'])) {
   $stmt  = mysqli_stmt_init($conn);
 
   if (!mysqli_stmt_prepare($stmt, $query)) {
-    die("Fatal error with the query");
+    //Fatal error with the query
+    die(http_response_code(409));
   } else {
     //actually running the query
     mysqli_stmt_bind_param($stmt, "i", $id);
@@ -73,13 +74,11 @@ if (isset($_SESSION['owner_id'])) {
       } else {
         //if password did not match
         $flag = false;
-        echo "Password did not match";
         die(http_response_code(401));
       }
     } else {
       //if the new password is not set
       $flag = false;
-      echo "New password was not enter";
       die(http_response_code(401));
     }
   } else {
@@ -102,7 +101,8 @@ if (isset($_SESSION['owner_id'])) {
 
   //if the query failed
   if (!mysqli_stmt_prepare($stmt, $query)) {
-    die("Fatal error the owner query failed");
+    //Fatal error the owner query failed
+    die(http_response_code(409));
   } else {
 
     //if the password is confirm
@@ -119,12 +119,8 @@ if (isset($_SESSION['owner_id'])) {
 
 
     //Check if the statement got executed
-    if (mysqli_stmt_execute($stmt)) {
-      //send successful message
-      echo "Successful";
-    } else {
+    if (!mysqli_stmt_execute($stmt)) {
       //this might be if the email is taken
-      echo "Email is taken";
       die(http_response_code(401));
     }
 
@@ -138,5 +134,5 @@ if (isset($_SESSION['owner_id'])) {
   //close the connection
   mysqli_close($conn);
 } else {
-  die("Please login");
+  die(http_response_code(409));
 }

@@ -24,15 +24,10 @@ $id = $_SESSION['business_id'];
 //If any variable is empty send an error message. 
 if (empty($id)) {
   //Error message
-  die("Please enter all the value");
+  die(http_response_code(409));
 } else {
 
-  //query to search for business info and review
-  // $query = "SELECT business.name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment 
-  // FROM (business
-  // INNER JOIN review
-  // ON business.id = review.business_id)
-  // WHERE business.id = ?";
+  //query for review
   $query = 
   "SELECT CONCAT(patron.first_name, ' ', patron.last_name) AS patron_name, review.mask_rating, review.social_distance_rating, review.sanitize_rating, review.comment
   FROM ((review
@@ -82,7 +77,7 @@ if (empty($id)) {
       echo $json;
 
       if (empty($json)) {
-        echo "No data";
+        die(http_response_code(409));
       }
     } else {
       echo "Fatal error with execute statement";

@@ -35,7 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     //check if the post is empty
     if (empty($id)) {
-      die("Fatal error, id was not enter");
+      //if id is empty
+      die(http_response_code(409));
     } else {
 
       //check if the id exits
@@ -44,7 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       //if the query does not run
       if (!mysqli_stmt_prepare($stmt, $query)) {
-        die("Fatal error with query");
+        //if the query is not run
+        die(http_response_code(409));
       } else {
         //prepare the statement by binding variable
         mysqli_stmt_bind_param($stmt, "i", $id);
@@ -59,21 +61,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($row = mysqli_fetch_assoc($result)) {
           
           if ($id == $row['id']) {
-            echo "Ur inside of this";
             //store the session 
             $_SESSION['business_id'] = $row['id'];
-
-            //display successful message
-            echo "You have selected";
           } else {
-
             //if the id did not match
-            echo "Fatal error when matching the id";
+            die(http_response_code(409));
           }
         } else {
-
           //if no data is fetch
-          echo "No data was fetch";
+          die(http_response_code(409));
         }
       }
     }
@@ -87,12 +83,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //close the connection
     mysqli_close($conn);
   } else {
-
     //if they are not logged-in
-    die("You must login");
+    die(http_response_code(409));
   }
 } else {
-
   //send error if the user try to get inside
   //the website without clicking the button
   die(http_response_code(404));

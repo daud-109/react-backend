@@ -25,7 +25,8 @@ if (isset($_SESSION['owner_id'])) {
 
     //if the query does not run
     if (!mysqli_stmt_prepare($stmt, $query)) {
-      die("Fatal error the spreadsheet select query did not run");
+      //Fatal error the spreadsheet select query did not run"
+      die(http_response_code(409));
     } else {
 
       //bind the variable to prepare the statement
@@ -57,9 +58,9 @@ if (isset($_SESSION['owner_id'])) {
         //encode the array into json formate
         $json = json_encode($display_table, JSON_PRETTY_PRINT);
 
-        //if no data get store
         if (!$json) {
-          echo "Something went wrong with the json";
+          //if json is empty
+          die(http_response_code(409));
         } else {
           //now echo it 
           echo $json;
@@ -67,7 +68,7 @@ if (isset($_SESSION['owner_id'])) {
       } else {
         //display an error if the insert statement
         //does not execute
-        echo "The statement did not execute";
+        die(http_response_code(409));
       }
     }
 
@@ -80,7 +81,8 @@ if (isset($_SESSION['owner_id'])) {
     //close the connection
     mysqli_close($conn);
   } else {
-    die("Please select a business");
+    //need to select an business
+    die(http_response_code(409));
   }
 } else {
   die("Please login");

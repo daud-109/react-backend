@@ -129,11 +129,9 @@ if (isset($_SESSION['owner_id'])) {
       mysqli_stmt_bind_param($stmt, "sssssssssii", $name, $type, $email, $phone, $description, $street, $town, $zip, $county, $alert, $id);
 
       //check if the statement executed
-      if (mysqli_stmt_execute($stmt)) {
-        echo "Edit Complete";
-      } else {
-        echo "Something was not enter right";
-        die(http_response_code(401));
+      if (!mysqli_stmt_execute($stmt)) {
+        //something went wrong with execute
+        die(http_response_code(409));
       }
 
 
@@ -142,16 +140,15 @@ if (isset($_SESSION['owner_id'])) {
 
       //close the statement
       mysqli_stmt_close($stmt);
-
-      //send 200 message
-      var_dump(http_response_code(200));
     }
 
     //close the connection
     mysqli_close($conn);
   } else {
-    die("Select a business");
+    //if the business is not selected
+    die(http_response_code(409));
   }
 } else {
-  die("Please login");
+  //please logged in
+  die(http_response_code(404));
 }

@@ -26,9 +26,8 @@ if (isset($_SESSION['owner_id'])) {
 
     //if the business query failed
     if (!mysqli_stmt_prepare($business_stmt, $business_query)) {
-
-      //display error and make sureeeeeeee to remove thisssss
-      die("Fatal error the business select query failed");
+      //Fatal error the business select query failed"
+      die(http_response_code(409));
     } else {
       //bind the variable to prepare the statement
       mysqli_stmt_bind_param($business_stmt, "i", $business_id);
@@ -60,9 +59,8 @@ if (isset($_SESSION['owner_id'])) {
         //display the data
         echo $json;
       } else {
-
         //for some reason if we do not get the id 
-        echo "Fatal error no data of the id";
+        die(http_response_code(409));
       }
     }
 
@@ -71,12 +69,9 @@ if (isset($_SESSION['owner_id'])) {
   } else {
 
     //if the user did not select a business display the error
-    echo "Select a business";
+    die(http_response_code(409));
   }
 } else {
-  //displayyyy errorr remove this later
-  echo "Log in please";
-
   //if the business owner is not logged in
   die(http_response_code(404));
 }

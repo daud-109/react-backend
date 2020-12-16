@@ -118,12 +118,8 @@ if (isset($_SESSION['patron_id'])) {
     }
 
     //Check if the statement got executed
-    if (mysqli_stmt_execute($stmt)) {
-      //send successful message
-      echo "Successful";
-    } else {
+    if (!mysqli_stmt_execute($stmt)) {
       //this might be if the email is taken
-      echo "Fatal error with the execute statement";
       die(http_response_code(401));
     }
 
@@ -137,5 +133,6 @@ if (isset($_SESSION['patron_id'])) {
   //close the connection
   mysqli_close($conn);
 } else {
-  die("Please login");
+  //Please login
+  die(http_response_code(409));
 }

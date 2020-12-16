@@ -43,8 +43,6 @@ if (isset($_SESSION['owner_id'])) {
 
     //if nothing is fetch than send error
     if (!$result) {
-      echo "Fatal error with result";
-
       //check which error you want to send
       die(http_response_code(409)); //conflict
 
@@ -77,9 +75,8 @@ if (isset($_SESSION['owner_id'])) {
         echo $json;
         
       } else {
-
         //if json is empty
-        echo "No data";
+        die(http_response_code(409));
       }
 
 
@@ -94,5 +91,6 @@ if (isset($_SESSION['owner_id'])) {
   //close the connection
   mysqli_close($conn);
 } else {
-  die("Please login");
+  //if they are not logged in
+  die(http_response_code(404));
 }

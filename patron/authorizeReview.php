@@ -2,6 +2,7 @@
 /*This file will check if the patron 
 **have the authority to leave a review
 */
+
 //this will helps us read the json file
 header("Access-Control-Allow-Origin: *");
 $json = file_get_contents("php://input");
@@ -12,6 +13,7 @@ header('Content-Type: application/json');
 
 //start the session
 session_start();
+
 //Check if the patron is logged in
 if (isset($_SESSION['patron_id'])) {
 
@@ -26,8 +28,8 @@ if (isset($_SESSION['patron_id'])) {
 
   //If any variable is empty send an error message. 
   if (empty($id)) {
-    //Error message
-    die("The json value send was empty");
+    //Error message the json value send was empty
+    die(http_response_code(409));
   } else {
     //set the patron id
     $patron_id = $_SESSION['patron_id'];
@@ -44,7 +46,8 @@ if (isset($_SESSION['patron_id'])) {
 
     //Check if the query failed
     if (!mysqli_stmt_prepare($stmt, $query)) {
-      die("Fatal error the business/spreadsheet query failed");
+      //Fatal error the business/spreadsheet query failed
+      die(http_response_code(409));
     } else {
 
       //bind the variable to prepare the statement
@@ -60,12 +63,10 @@ if (isset($_SESSION['patron_id'])) {
 
         //if the row is affected allow the patron to insert
         if ($row > 0) {
-          echo "good";
           //Start session
           //$_SESSION['business_id'] = $id; //business
 
         } else {
-          echo "Something went wrong";
           //display error if user is not allow to submit review
           die(http_response_code(404));
         }
@@ -83,7 +84,6 @@ if (isset($_SESSION['patron_id'])) {
   mysqli_close($conn);
   
 } else {
-  echo "Log-in";
   //send error message
   die(http_response_code(404));
 }

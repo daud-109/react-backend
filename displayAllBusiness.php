@@ -45,6 +45,7 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
     echo $json;
     
   } else {
-    echo "Fatal error with execution";
+    //Fatal error with execution
+    die(http_response_code(409));
   }
 }

@@ -3,7 +3,6 @@
 **It will have auto date set up.
 */
 
-//check
 //start the session
 session_start();
 
@@ -31,7 +30,7 @@ if (isset($_SESSION['patron_id'])) {
   //if the query does not run
   if (!mysqli_stmt_prepare($stmt, $query)) {
     //terminate the program
-    die("Fatal error the spreadsheet select query did not run");
+    die(http_response_code(409));
   } else {
 
     //bind the variable to prepare the statement
@@ -48,8 +47,8 @@ if (isset($_SESSION['patron_id'])) {
     $insert_stmt = mysqli_stmt_init($conn);
 
     if (!mysqli_stmt_prepare($insert_stmt, $insert_query)) {
-      //terminate the program
-      die("Fatal error the notification insert query did not run");
+      //terminate the program fatal error the notification insert query did not run
+      die(http_response_code(409));
     } else {
 
       //so in order to make sure no duplication is inserted I have
@@ -83,19 +82,15 @@ if (isset($_SESSION['patron_id'])) {
 
             //execute the delete statement
             if (!mysqli_stmt_execute($insert_stmt)) {
-              echo "It did not executed the insert. ";
+              die(http_response_code(409));
             } else {
-              echo "Insert successfully";
               $flag = true;
               $business_id[$i] = $row['business_id'];
-              //include this file to send auto email
-              //require_once "../business/sendemail/email.php";
-              //require_once "../business/sendemail/autoEmail.php";
               $i++;
             }
           } else {
             $flag = false;
-            echo "Same\n";
+            die(http_response_code(409));
           }
         }
         if ($flag === true) {
@@ -103,7 +98,8 @@ if (isset($_SESSION['patron_id'])) {
           require_once "../business/sendemail/autoEmail.php";
           //print_r($business_id);
         } else {
-          echo "this the same information";
+          //this the same information
+          die(http_response_code(409));
         }
       }
     }
@@ -124,6 +120,6 @@ if (isset($_SESSION['patron_id'])) {
   //close the connection 
   mysqli_close($conn);
 } else {
-  //send error message
-  die("Please Log-in");
+  //send error message Please Log-in
+  die(http_response_code(409));
 }

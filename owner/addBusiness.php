@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     //If any variable are empty send an error message. 
     if (empty($name) || empty($type) || empty($email) || empty($phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county) || empty($alert)) {
-      //Error message
-      die("Please enter all the value");
+      //Error message please enter all the value
+      die(http_response_code(409));
     }
 
     //Insert value into the business table
@@ -47,19 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     //check if there is error in the previous query
     if (!mysqli_stmt_prepare($stmt, $query)) {
-      die("Fatal error for the business query");
+      //Fatal error for the business query
+      die(http_response_code(409));
     } else {
 
       //Provide the the statement to bind, provide the type of variable and the variable itself.
       mysqli_stmt_bind_param($stmt, "isssssssssi", $owner_id, $name, $type, $email, $phone, $description, $street, $town, $zip, $county, $alert);
 
       //check if the business is added
-      if (mysqli_stmt_execute($stmt)) {
-        echo "New business add";
-      } else {
-        //if not display error
-        echo "Failed to add new business";
-      }
+      if (!mysqli_stmt_execute($stmt)) {
+        //if it does not execute
+        die(http_response_code(409));
+      } 
     }
 
     //free the memory
@@ -68,18 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     //close the statement
     mysqli_stmt_close($stmt);
 
-    //maybe display a message
-
-    var_dump(http_response_code(200));
-
     //close the connection 
     mysqli_close($conn);
   } else {
-    die("Please login");
+    //if they are not logged in
+    die(http_response_code(409));
   }
 } else {
-
   //send error because user try to get inside the file without clicking on the submit button
-  echo "Not allowed";
   die(http_response_code(404));
 }

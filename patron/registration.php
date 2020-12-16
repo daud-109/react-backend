@@ -26,10 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
-
     //send error message
-    echo json_encode(["sent" => false, "message" => "Please enter all the value"]);
-    die();
+    die(http_response_code(409));
   }
 
   //Check if the email exits in the database.
@@ -39,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //Check if the query run
   if (!mysqli_stmt_prepare($stmt, $query)) {
     //End the program if the query does not run
-    die("Fatal Error for the owner query to check if the email is taken");
+    die(http_response_code(409));
   } else {
 
     //Provide the the statement to bind, provide the type of variable and the variable itself.
@@ -56,16 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
       //check if the password is in the database
       if ($row['hash_password']) {
-        
         //if the password is filled
         echo json_encode(["message" => "Email is taken"], JSON_PRETTY_PRINT);
-
       } else {
 
         //check if the first name match 
         if ($row['first_name'] !== $first_name) {
           
-
+          //if the first name does not match 
           $json = ["first_name" => "Please enter the correct first name"];
 
           //inside of this check if the last name match
@@ -84,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           //if the first name is correct now check if the last name match
         } else if ($row['last_name'] !== $last_name) {
 
-          //if 
+          //if last name does not match
           echo json_encode(["message" => "Please enter the correct last name"], JSON_PRETTY_PRINT);
 
         } else {
@@ -96,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
           if (!mysqli_stmt_prepare($stmt, $query)) {
 
             //send error if the query does not work
-            die("Fatal error the patron query failed");
+            die(http_response_code(409));
 
           } else {
 
@@ -110,15 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             mysqli_stmt_bind_param($stmt, "si", $hash_password, $id);
 
             //execute the statement
-            if (mysqli_stmt_execute($stmt)) {
+            if (!mysqli_stmt_execute($stmt)) {
 
-              echo "Successfully register";
-
-            } else {
-              //if the statement is not correct
-              echo "Something went wrong";
-              
-            }
+              //if it does not execute
+              die(http_response_code(409));
+            } 
           }
         }
       }
@@ -140,17 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         mysqli_stmt_bind_param($stmt, "ssss", $first_name, $last_name, $email, $hash);
 
         //execute the data provide by the user and the sql stamens.
-        if (mysqli_stmt_execute($stmt)) {
-
-          //send message
-          echo json_encode(["sent" => true, "message" => "Successful register"]);
-          var_dump(http_response_code(200));
-
-        } else {
-
-          //display the error message
-          echo "No excitation";
-
+        if (!mysqli_stmt_execute($stmt)) {
+          //if it does not execute 
+          die(http_response_code(409));
         }
 
         //free the memory

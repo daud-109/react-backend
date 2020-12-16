@@ -11,7 +11,7 @@ $data = json_decode($json, true); //rue make as an associated array
 
 
 //Start session
-//session_start();
+session_start();
 
 //include the file to connect with mysql 
 require_once './mysqlConn.php';
@@ -19,9 +19,9 @@ require_once './function.php';
 
 //Unset the business session to 
 //start new session
-// if (isset($_SESSION['business_id'])) {
-//   unset($_SESSION['business_id']);
-// }
+if (isset($_SESSION['business_id'])) {
+  unset($_SESSION['business_id']);
+}
 
 //declare the variable
 $id = "";
@@ -55,22 +55,18 @@ if (empty($id)) {
     if ($row = mysqli_fetch_assoc($result)) {
 
       if ($id == $row['id']) {
-        echo "Ur inside of this";
         //store the session 
-        session_start();
+        //session_start();
         $_SESSION['business_id'] = $row['id'];
-
-        //display successful message
-        echo "You have selected";
       } else {
 
-        //if the id did not match
-        echo "Fatal error when matching the id";
+        //if the id did not match fatal error when matching the id
+        die(http_response_code(409));
       }
     } else {
 
-      //if no data is fetch
-      echo "No data was fetch";
+      //if no data is fetch no data was fetch
+      die(http_response_code(409));
     }
   }
 }

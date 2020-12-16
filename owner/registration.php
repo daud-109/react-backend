@@ -36,35 +36,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   $county = htmlspecialchars($_POST['county']);
   $alert = htmlspecialchars($_POST['alert']);
 
-  var_dump($alert);
-  //change the alert to number
-  // if ($alert === "true") { 
-  //   //send message automatically
-  //   echo "Ur in here";
-  //   $alert = 1;
-  // } elseif ($alert ===  "false") {
-  //   //send message manually
-  //   echo "in zero";
-  //   $alert = 0;
-  // } else {
-  //   echo "ur in else";
-  //   $alert = 1;
-  // }
-
+  //check if the alert is check or not
   if ($alert ===  "false") {
-    //send message manually
-    echo "in zero";
     $alert = 0;
   } else {
-    echo "ur in else";
+    //if true
     $alert = 1;
   }
 
   //If any variable are empty send an error message. 
   if (empty($first_name) || empty($last_name) || empty($owner_email) || empty($password) || empty($business_name) || empty($business_type) || empty($business_email) || empty($business_phone) || empty($description) || empty($street) || empty($town) || empty($zip) || empty($county)) {
-
     //send error message
-    die("Please enter all the value");
+    die(http_response_code(409));
   }
 
   //Check if the email exits in the database.
@@ -74,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //Check if the query run
   if (!mysqli_stmt_prepare($stmt, $query)) {
     //End the program if the query does not run
-    die("Fatal Error for the owner query to check if the email is taken");
+    die(http_response_code(409));
   } else {
 
     //Provide the the statement to bind, provide the type of variable and the variable itself.
@@ -92,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     //check if the email exits by number of row.
     //So if one row is effect that mean email exits.
     if ($row > 0) {
-      //Display error
-      die("Email is taken");
+      //Display error if the email is taken
+      die(http_response_code(409));
     } else {
 
       //use the place holder to add the data into the Owner table
@@ -123,37 +106,26 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
           //check if there is error in the previous query
           if (!mysqli_stmt_prepare($stmt, $query)) {
-
             //display an error message
-            die("Fatal error for the business query");
+            die(http_response_code(409));
           } else {
 
             //Provide the the statement to bind, provide the type of variable and the variable itself.
             mysqli_stmt_bind_param($stmt, "isssssssssi", $owner_id, $business_name, $business_type, $business_email, $business_phone, $description, $street, $town, $zip, $county, $alert);
 
             //Now check if this query executed
-            if (mysqli_stmt_execute($stmt)) {
-
-              //successfully register
-              echo "Successfully Register";
-              var_dump(http_response_code(200));
-            } else {
-
+            if (!mysqli_stmt_execute($stmt)) {
               //So delete the owner data
               $query = "DELETE FROM business_owner WHERE id = '$owner_id'";
               $stmt = mysqli_stmt_prepare($conn, $query);
-
-              //execute the delete statement
-              mysqli_stmt_execute($stmt);
 
               //Data enter into query was not correct
               echo "Something was not enter in correct format for the business";
             }
           }
         } else {
-
           //Data pass into the owner query was not correct
-          echo "Something was not enter in correct format for the owner";
+          die(http_response_code(409));
         }
 
         //free the memory
@@ -167,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   //close the connection 
   mysqli_close($conn);
 } else {
-
   //send error because user try to get inside the file without clicking on the submit button
   die(http_response_code(404));
 }
