@@ -5,10 +5,10 @@
 **Talk to your team if they want send data as json or post (most likely post).
 **if using post make sure the user cannot edit the info
 */
+
 header("Access-Control-Allow-Origin: *"); //see if you can remove the * star sign and add json application/json
 $json = file_get_contents("php://input"); //you can remove this line and see what happen
 $data = json_decode($json, true); //rue make as an associated array 
-
 
 //Start session
 session_start();

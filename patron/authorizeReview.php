@@ -19,7 +19,7 @@ if (isset($_SESSION['patron_id'])) {
 
   //include the file to connect with mysql 
   require_once '../mysqlConn.php';
-  
+
   //declare variable
   $id = "";
 
@@ -35,7 +35,7 @@ if (isset($_SESSION['patron_id'])) {
     $patron_id = $_SESSION['patron_id'];
 
     //This query will check if the patron exit in spreadsheet
-    $query = "SELECT DISTINCT business.id
+    $query = "SELECT DISTINCT business.id, COUNT(spreadsheet.sheet_date) AS count
     FROM (business 
     INNER JOIN spreadsheet
     ON business.id = spreadsheet.business_id)
@@ -56,16 +56,45 @@ if (isset($_SESSION['patron_id'])) {
       //check if it executed
       if (mysqli_stmt_execute($stmt)) {
 
-        mysqli_stmt_store_result($stmt); //This is fetching data from the database
+        //get the result
+        $result = mysqli_stmt_get_result($stmt);
 
-        //Number of result or rows.
-        $row = mysqli_stmt_num_rows($stmt);
+        //get the fetch array to set the data
+        $row = mysqli_fetch_assoc($result);
 
-        //if the row is affected allow the patron to insert
-        if ($row > 0) {
-          //Start session
-          //$_SESSION['business_id'] = $id; //business
+        //check if the patron is allow leave review
+        if ($row) {
 
+          $query = "SELECT COUNT(?) as review_count
+          FROM review 
+          WHERE business_id = ?";
+          $stmt = mysqli_stmt_init($conn);
+
+          //check if the query is good
+          if (!mysqli_stmt_prepare($stmt, $query)) {
+            //Fatal error the business/spreadsheet query failed
+            die(http_response_code(409));
+          } else {
+
+            //check if code is not execute
+            if (!mysqli_stmt_execute($stmt)) {
+              //if the execute did not work
+              die(http_response_code(404));
+            } else {
+              //get the result
+              $check_result = mysqli_stmt_get_result($stmt);
+
+              //get the fetch array to set the data
+              $check_row = mysqli_fetch_assoc($result);
+
+              //now check if the patron is allow to leave a review
+              if($check_row['review_count'] > $row['count']){
+                //so if the check row has more count than 
+                //they are not allow to leave a review
+                die(http_response_code(409));
+              }
+            }
+          }
         } else {
           //display error if user is not allow to submit review
           die(http_response_code(404));
@@ -82,7 +111,6 @@ if (isset($_SESSION['patron_id'])) {
 
   //close the connection 
   mysqli_close($conn);
-  
 } else {
   //send error message
   die(http_response_code(404));
