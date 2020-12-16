@@ -11,10 +11,11 @@ $data = json_decode($json, true); //rue make as an associated array
 
 
 //Start session
-
+//session_start();
 
 //include the file to connect with mysql 
-require_once '../mysqlConn.php';
+require_once './mysqlConn.php';
+require_once './function.php';
 
 //Unset the business session to 
 //start new session
@@ -27,7 +28,7 @@ $id = "";
 
 //Post variables 
 $id = htmlspecialchars($data['id']);
-$id =1;
+
 //check if the post is empty
 if (empty($id)) {
   die("Fatal error, id was not enter");
@@ -54,10 +55,13 @@ if (empty($id)) {
     if ($row = mysqli_fetch_assoc($result)) {
 
       if ($id == $row['id']) {
-        session_start();
+        echo "Ur inside of this";
         //store the session 
-        $_SESSION['review_business_id'] = $row['id'];
-        echo $_SESSION['business_id'];
+        session_start();
+        $_SESSION['business_id'] = $row['id'];
+
+        //display successful message
+        echo "You have selected";
       } else {
 
         //if the id did not match

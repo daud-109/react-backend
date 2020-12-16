@@ -4,24 +4,21 @@
 **authorization.
 */
 
-// //this will helps us read the json file
-// header("Access-Control-Allow-Origin: *");
-// $json = file_get_contents("php://input");
-// $_POST = json_decode($json, true);
+//this will helps us read the json file
+header("Access-Control-Allow-Origin: *");
+$json = file_get_contents("php://input");
+$_POST = json_decode($json, true);
 
 //this will help us send json file
 header('Content-Type: application/json');
 
 //file to connect to the database
-require_once '../mysqlConn.php';
+require_once './mysqlConn.php';
 
 //declare variable
 session_start();
 
-//declare a variable
-$id = "";
-
-$id = $_SESSION['review_business_id'];
+$id = $_SESSION['business_id'];
 
 
 //If any variable is empty send an error message. 

@@ -3,12 +3,10 @@
 **user can select a business to check
 **for the review of the business
 */
-die();
 header('Content-Type: application/json');
 
-
 //include the file to connect with mysql 
-require_once '../mysqlConn.php';
+require_once './mysqlConn.php';
 
 //declare variable here
 $search_by = $search_for = '';
@@ -17,12 +15,6 @@ $search_by = $search_for = '';
 //Post variable here and fill in the post variable name
 $search_by = htmlspecialchars($_POST['search_by']);
 $search_for = htmlspecialchars($_POST['search_for']);
-
-//if data is empty
-if(empty($search_by) || empty($search_for)){
-  die("Please enter all of the value");
-}
-
 //Select all of the business
 $query = "SELECT id, name, type, street, town, zip, county 
           FROM business 
@@ -40,7 +32,7 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
   //bind the statement
   mysqli_stmt_bind_param($stmt, "s", $search_for);
 
-  echo $search_by . " " . $search_for;
+  //echo $search_by . " " . $search_for;
   //execute the statement
   if (mysqli_stmt_execute($stmt)) {
 
@@ -69,7 +61,6 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
     echo $json;
   } else {
     echo "Fatal error with execution";
-    die(http_response_code(401));
   }
 }
 

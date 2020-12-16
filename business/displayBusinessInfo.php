@@ -74,7 +74,6 @@ if (isset($_SESSION['owner_id'])) {
     echo "Select a business";
   }
 } else {
-
   //displayyyy errorr remove this later
   echo "Log in please";
 
