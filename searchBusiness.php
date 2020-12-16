@@ -15,11 +15,17 @@ $search_by = $search_for = '';
 $search_by = htmlspecialchars($_POST['search_by']);
 $search_for = htmlspecialchars($_POST['search_for']);
 
+//check if it is empty
+if(empty($search_by)){
+  $search_by = 'name';
+}
+
 //Select all of the business
 $query = "SELECT id, name, type, street, town, zip, county 
           FROM business 
           WHERE $search_by LIKE ?";
 $stmt = mysqli_stmt_init($conn);
+
 
 //if the business query is not setup properly
 if (!mysqli_stmt_prepare($stmt, $query)) {

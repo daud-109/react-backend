@@ -29,6 +29,7 @@ if (isset($_SESSION['patron_id'])) {
   //If any variable is empty send an error message. 
   if (empty($id)) {
     //Error message the json value send was empty
+    echo "Empty id";
     die(http_response_code(409));
   } else {
     //set the patron id
@@ -47,6 +48,7 @@ if (isset($_SESSION['patron_id'])) {
     //Check if the query failed
     if (!mysqli_stmt_prepare($stmt, $query)) {
       //Fatal error the business/spreadsheet query failed
+      echo "fatal error with query";
       die(http_response_code(409));
     } else {
 
@@ -73,11 +75,16 @@ if (isset($_SESSION['patron_id'])) {
           //check if the query is good
           if (!mysqli_stmt_prepare($stmt, $query)) {
             //Fatal error the business/spreadsheet query failed
+            echo "Fatal error with review query";
             die(http_response_code(409));
           } else {
+            
+            //bind the statement
+            mysqli_stmt_bind_param($stmt, "ii", $patron_id, $id);
 
             //check if code is not execute
             if (!mysqli_stmt_execute($stmt)) {
+              echo "Not execute";
               //if the execute did not work
               die(http_response_code(404));
             } else {
@@ -88,7 +95,8 @@ if (isset($_SESSION['patron_id'])) {
               $check_row = mysqli_fetch_assoc($result);
 
               //now check if the patron is allow to leave a review
-              if($check_row['review_count'] > $row['count']){
+              if ($check_row['review_count'] > $row['count']) {
+                echo "ur in here";
                 //so if the check row has more count than 
                 //they are not allow to leave a review
                 die(http_response_code(409));
@@ -97,6 +105,7 @@ if (isset($_SESSION['patron_id'])) {
           }
         } else {
           //display error if user is not allow to submit review
+          echo "error not allow to submit";
           die(http_response_code(404));
         }
       }
@@ -112,6 +121,7 @@ if (isset($_SESSION['patron_id'])) {
   //close the connection 
   mysqli_close($conn);
 } else {
+  echo "Need to login";
   //send error message
   die(http_response_code(404));
 }

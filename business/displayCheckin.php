@@ -13,6 +13,7 @@ if (isset($_SESSION['owner_id'])) {
 
   //Check if the user selected a business
   if (isset($_SESSION['business_id'])) {
+    
     //include the file to connect with mysql 
     require_once '../mysqlConn.php';
 
