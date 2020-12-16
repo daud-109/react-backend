@@ -46,7 +46,7 @@ if (isset($_SESSION['owner_id'])) {
         $row = mysqli_fetch_assoc($result);
 
         //get the most recent alert
-        $display_notification_date[$i] = ["positive_date" => $row['positive_date']];
+        $display_notification_date = ["positive_date" => $row['positive_date']];
 
         //encode the array into json formate
         $json = json_encode($display_notification_date, JSON_PRETTY_PRINT);

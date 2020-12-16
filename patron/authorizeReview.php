@@ -3,14 +3,6 @@
 **have the authority to leave a review
 */
 
-//this will helps us read the json file
-header("Access-Control-Allow-Origin: *");
-$json = file_get_contents("php://input");
-$data = json_decode($json, true);
-
-//this will help us send json file
-header('Content-Type: application/json');
-
 //start the session
 session_start();
 
@@ -29,20 +21,17 @@ if (isset($_SESSION['patron_id'])) {
   //If any variable is empty send an error message. 
   if (empty($id)) {
     //Error message the json value send was empty
-    echo "Empty id";
     die(http_response_code(409));
   } else {
     //set the patron id
     $patron_id = $_SESSION['patron_id'];
 
     //This query will check if the patron exit in spreadsheet
-    $query = "SELECT DISTINCT business.id, COUNT(spreadsheet.sheet_date) AS count
+    $query = "SELECT COUNT(business.id) as count
     FROM (business 
     INNER JOIN spreadsheet
     ON business.id = spreadsheet.business_id)
     WHERE spreadsheet.patron_id = ? AND  business.id = ?";
-
-    //initialize the statement
     $stmt = mysqli_stmt_init($conn);
 
     //Check if the query failed
@@ -67,35 +56,35 @@ if (isset($_SESSION['patron_id'])) {
         //check if the patron is allow leave review
         if ($row) {
 
-          $query = "SELECT COUNT(?) as review_count
+          $review_query = "SELECT COUNT(?) as review_count
           FROM review 
           WHERE business_id = ?";
-          $stmt = mysqli_stmt_init($conn);
+          $review_stmt = mysqli_stmt_init($conn);
 
           //check if the query is good
-          if (!mysqli_stmt_prepare($stmt, $query)) {
+          if (!mysqli_stmt_prepare($review_stmt, $review_query)) {
             //Fatal error the business/spreadsheet query failed
             echo "Fatal error with review query";
             die(http_response_code(409));
           } else {
-            
+
             //bind the statement
-            mysqli_stmt_bind_param($stmt, "ii", $patron_id, $id);
+            mysqli_stmt_bind_param($review_stmt, "ii", $patron_id, $id);
 
             //check if code is not execute
-            if (!mysqli_stmt_execute($stmt)) {
+            if (!mysqli_stmt_execute($review_stmt)) {
               echo "Not execute";
               //if the execute did not work
               die(http_response_code(404));
             } else {
               //get the result
-              $check_result = mysqli_stmt_get_result($stmt);
+              $check_result = mysqli_stmt_get_result($review_stmt);
 
               //get the fetch array to set the data
-              $check_row = mysqli_fetch_assoc($result);
+              $check_row = mysqli_fetch_assoc($check_result);
 
               //now check if the patron is allow to leave a review
-              if ($check_row['review_count'] > $row['count']) {
+              if ($check_row['review_count'] >= $row['count']) {
                 echo "ur in here";
                 //so if the check row has more count than 
                 //they are not allow to leave a review
@@ -111,6 +100,12 @@ if (isset($_SESSION['patron_id'])) {
       }
     }
   }
+
+  //free the memory
+  mysqli_stmt_free_result($review_stmt);
+
+  //close the statement
+  mysqli_stmt_close($review_stmt);
 
   //free the memory
   mysqli_stmt_free_result($stmt);

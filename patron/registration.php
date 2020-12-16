@@ -57,12 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         //if the password is filled
         echo "Email is taken";
         die(http_response_code(409));
-
       } else {
 
         //check if the first name match 
         if ($row['first_name'] !== $first_name) {
-          
+
           //if the first name does not match 
           echo "Please enter the correct first name";
           die(http_response_code(409));
@@ -73,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             //add the last name key to array
             echo "Please enter the correct last name";
             die(http_response_code(409));
-            
           } else {
 
             //if the last name is correct, just send the first name error
@@ -86,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
           //if last name does not match
           echo json_encode(["message" => "Please enter the correct last name"], JSON_PRETTY_PRINT);
-
         } else {
 
           //sign up the patron
@@ -97,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             //send error if the query does not work
             die(http_response_code(409));
-
           } else {
 
             //store the id and the password
@@ -114,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
               //if it does not execute
               die(http_response_code(409));
-            } 
+            }
           }
         }
       }
